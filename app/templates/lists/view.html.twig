@@ -1,0 +1,132 @@
+{% extends "base.html.twig" %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        .header {
+            width: 100%;
+            height: 55px;
+            background-color: #fff;
+            text-align: right;
+            line-height: 50px;
+            padding-right: 30px;
+            color: #fff;
+            font-size: 16px;
+        }
+
+        .main-content {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: flex;
+            flex-direction: row;
+        }
+
+        .aside {
+            width: 300px;
+            height: 100%;
+
+        }
+
+        .list-margin {
+            margin-top: 30px;
+        }
+
+        .lists-content {
+            height: calc(100% - 100px);
+            width: calc(100% - 100px);
+            position: relative;
+            top: 100px;
+            padding: 0 40px;
+        }
+
+        .custom-pos_rel {
+            position: relative;
+        }
+
+        .custom-btn_table {
+            position: absolute;
+            top:5px;
+        }
+
+        .custom-narrow {
+            width: 70px;
+        }
+
+        .custom-m-b {
+            margin-bottom: 30px;
+        }
+    </style>
+{% endblock %}
+
+{% block title %}
+    Application
+{% endblock %}
+
+{% block body %}
+    <header class="header">
+        <button class="btn btn-outline-info my-2 my-sm-0" >Sign Out</button>
+    </header>
+    <div class="main-content">
+        <aside class="aside bg-info">
+            <h1 class="card-title text-light m-lg-2">ShopLista</h1>
+            {% if lists is defined and lists|length %}
+                <ul class="list-group list-margin" >
+                    {% for list in lists %}
+                        <a href="{{ url('lists_view', {'id': list.id}) }}" title="{{ list.name }}" class="text-light"><li id="{{ list.id }}" class="list-group-item bg-info">{{ list.name }}</li></a>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+            <ul class="list-group list-margin">
+                <a href="{{ url('manage_lists') }}" title="{{ 'title.manage_lists'|trans }}" class="text-light"><li class="list-group-item bg-info">{{ 'title.manage_lists'|trans }}</li></a>
+            </ul>
+        </aside>
+        <main class="lists-content">
+            <h3 class="modal-title text-monospace">{{ activeList.name }}</h3>
+            {%  if activeList.maxCost %}
+                <div class="float-right custom-m-b">{{ 'label.max_cost'|trans }}<span class="font-weight-bold text-monospace">{{ activeList.maxCost }}</span>
+                    <!--TO DO: Dodać ,,dotychczas wydano" obliczane na podstawie kupionych rzeczy-->
+                    <div class="progress">
+                        <div class="progress-bar bg-success" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">25%</div>
+                    </div>
+                </div>
+                {% else %}
+                <div class="float-right custom-m-b">{{ 'label.no_max_cost'|trans }} <a href="{{ url('list_edit', {'id': activeList.id}) }}" class="text-warning">{{ 'label.edit_current_list'|trans }}</a></div>
+            {% endif %}
+            <table class="table table-hover">
+                <caption>{{ 'table.caption'|trans({'%name%': activeList.name}) }}</caption>
+                <tbody>
+                <tr>
+                    <td class="custom-narrow"><span class="badge badge-primary badge-pill">2</span></th>
+                    <th scope="row" class="text-uppercase">Mark</td>
+                    <td><a href="#" class="text-warning">{{ 'label.edit'|trans }}</a></td>
+                    <td class="custom-pos_rel"><button type="button" class="btn btn-success custom-btn_table">{{ 'label.bought'|trans }}</button></td>
+                </tr>
+                </tbody>
+            </table>
+        </main>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+    function setActiveList() {
+        var address = window.location.href ;
+        address = address.split('/');
+        var id = address[address.length - 1];
+
+        var activeList  = document.getElementById(id);
+        activeList.className += ' bg-white text-dark';
+
+    }
+
+    setActiveList();
+</script>
+{% endblock %}
