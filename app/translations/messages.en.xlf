@@ -58,6 +58,10 @@
                 <source>label.add_list</source>
                 <target>Create new list</target>
             </trans-unit>
+            <trans-unit id="label.add_element">
+                <source>label.add_element</source>
+                <target>Add new product</target>
+            </trans-unit>
             <trans-unit id="label.edit_list">
                 <source>label.edit_list</source>
                 <target>Edit list '%name%'</target>
@@ -85,6 +89,14 @@
             <trans-unit id="label.no_max_cost">
                 <source>label.no_max_cost</source>
                 <target>You didn't set planned shopping costs</target>
+            </trans-unit>
+            <trans-unit id="label.value">
+                <source>label.value</source>
+                <target>Value*:</target>
+            </trans-unit>
+            <trans-unit id="label.quantity">
+                <source>label.quantity</source>
+                <target>Quantity*:</target>
             </trans-unit>
             <trans-unit id="title.choose_list">
                 <source>title.choose_list</source>

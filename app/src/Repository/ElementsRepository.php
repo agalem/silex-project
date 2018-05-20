@@ -47,6 +47,39 @@ class ElementsRepository {
 		return $queryBuilder->execute()->fetchAll();
 	}
 
+	public function save($element)
+	{
+		/*if (isset($element['id']) && ctype_digit((string) $element['id'])) {
+			// update record
+			$id = $element['id'];
+			unset($element['id']);
+
+			return $this->db->update('elements', $element, ['id' => $id]);
+		} else {
+			// add new record
+			$this->db->insert('elements', $element);
+			$element['id'] = $this->db->lastInsertId();
+
+			return $element;
+		}*/
+		$this->db->beginTransaction();
+
+	}
+
+	protected function addLinkedElements($listId, $elementsIds) {
+		if(!is_array($elementsIds)) {
+			$elementsIds = [$elementsIds];
+		}
+		foreach ($elementsIds as $elementId) {
+			$this->db->insert(
+				'elements_lists',
+				[
+					'element_id' => $elementId,
+					'list_id' => $listId,
+				]
+			);
+		}
+	}
 
 	protected function queryAll() {
 		$queryBuilder = $this->db->createQueryBuilder();

@@ -2,7 +2,9 @@
 
 namespace Controller;
 
+use Form\ElementType;
 use Form\ListType;
+use Repository\ElementsRepository;
 use Repository\ListsRepository;
 use Silex\Application;
 use Silex\Api\ControllerProviderInterface;
@@ -26,6 +28,11 @@ class ListsController implements ControllerProviderInterface {
 		$controller->match('/add', [$this, 'addAction'])
 		           ->method('POST|GET')
 		           ->bind('list_add');
+
+		$controller->match('{id}/add', [$this, 'addElementAction'])
+		           ->method('POST|GET')
+		           ->assert('id', '[1-9]\d*' )
+		           ->bind('element_add');
 
 		$controller->match('/{id}/edit', [$this, 'editAction'])
 		           ->method('GET|POST')
@@ -91,7 +98,7 @@ class ListsController implements ControllerProviderInterface {
 
 		$list = [];
 
-		$form = $app['form.factory']->createBuilder(ListType::class, $list)->getForm();
+		$form = $app['form.factory']->createBuilder(ListType::class, $list, ['elements_repository' => new ElementsRepository($app['db'])])->getForm();
 		$form->handleRequest($request);
 
 		if($form->isSubmitted() && $form->isValid()) {
@@ -134,7 +141,7 @@ class ListsController implements ControllerProviderInterface {
 			return $app->redirect($app['url_generator']->generate('lists_index'));
 		}
 
-		$form = $app['form.factory']->createBuilder(ListType::class, $list)->getForm();
+		$form = $app['form.factory']->createBuilder(ListType::class, $list, ['elements_repository' => new ElementsRepository($app['db'])])->getForm();
 		$form->handleRequest($request);
 
 		if($form->isSubmitted() && $form->isValid()){
@@ -157,6 +164,7 @@ class ListsController implements ControllerProviderInterface {
 				'editedList' => $list,
 				'form' => $form->createView(),
 				'lists' => $listsRepository->findAll(),
+				'products' => $listsRepository->findLinkedElements($id),
 			]
 		);
 	}
@@ -207,4 +215,51 @@ class ListsController implements ControllerProviderInterface {
 		);
 	}
 
+	public function addElementAction(Application $app, $id, Request $request) {
+		$elementsRepository = new ElementsRepository($app['db']);
+		$listsRepository = new ListsRepository($app['db']);
+
+		$list = $listsRepository->findOneById($id);
+		$element = [];
+
+		if(!$list) {
+			$app['session']->getFlashBag()->add(
+				'messages',
+				[
+					'type' => 'warning',
+					'message' => 'message.record_not_found',
+				]
+			);
+
+			return $app->redirect($app['url_generator']->generate('lists_manager'));
+		}
+
+		$form = $app['form.factory']->createBuilder(ElementType::class, $element)->getForm();
+		$form->handleRequest($request);
+
+		if($form->isSubmitted() && $form->isValid()) {
+			$elementsRepository->save($form->getData());
+			$listsRepository->saveElement($id);
+
+			$app['session']->getFlashBag()->add(
+				'messages',
+				[
+					'type' => 'success',
+					'message' => 'message.element_successfully_added',
+				]
+			);
+
+			return $app->redirect($app['url_generator']->generate('list_edit', array('id' => $id)), 301);
+		}
+
+		return $app['twig']->render(
+			'elements/add.html.twig',
+			[
+				'newElement' => $element,
+				'form' => $form->createView(),
+				'lists' => $listsRepository->findAll(),
+				'editedList' => $listsRepository->findOneById($id),
+			]
+		);
+	}
 }

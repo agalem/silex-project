@@ -22,11 +22,11 @@ class ListsRepository {
 	public function findOneById($id) {
 		$queryBuilder = $this->queryAll();
 		$queryBuilder->where('l.id = :id')
-			->setParameter(':id', $id, \PDO::PARAM_INT);
+		             ->setParameter(':id', $id, \PDO::PARAM_INT);
 		$result = $queryBuilder->execute()->fetch();
 
-		if($result) {
-			$result['elements'] = $this->findLinkedElementsIds($result['id']);
+		if ($result) {
+			$result['elements'] = $this->findLinkedElements($result['id']);
 		}
 
 		return $result;
@@ -43,9 +43,17 @@ class ListsRepository {
 		}
 	}
 
+
+	public function updateModiefiedDate($listId) {
+		$currentDateTime = new \DateTime();
+		$list['modifiedAt'] = $currentDateTime->format('Y-m-d H:i:s');
+		$this->db->update('lists', $list, ['id' => $listId]);
+	}
+
 	public function delete($list) {
 		return $this->db->delete('lists', ['id' => $list['id']]);
 	}
+
 
 	public function findLinkedElements($listId)
 	{
@@ -65,6 +73,10 @@ class ListsRepository {
 		$result = $queryBuilder->execute()->fetchAll();
 
 		return isset($result) ? array_column($result, 'element_id') : [];
+	}
+
+	protected function removeLinkedElements($listId) {
+		return $this->db->delete('elements_lists', ['list_id' => $listId]);
 	}
 
 	protected function queryAll() {
