@@ -17,11 +17,11 @@ class ListsController implements ControllerProviderInterface {
 
 		$controller->get('/', [$this, 'indexAction'])->bind('lists_index');
 
-		$controller->get('{id}', [$this, 'viewAction'])
+		$controller->get('/{id}', [$this, 'viewAction'])
 		           ->assert('id', '[1-9]\d*' )
 		           ->bind('lists_view');
 
-		$controller->get('/manage', [$this, 'manageAction'])->bind('manage_lists');
+		$controller->get('/manager', [$this, 'managerAction'])->bind('lists_manager');
 
 		$controller->match('/add', [$this, 'addAction'])
 		           ->method('POST|GET')
@@ -73,12 +73,14 @@ class ListsController implements ControllerProviderInterface {
 		);
 	}
 
-	public function manageAction(Application $app) {
-		$listsRepository = new ListsRepository($app['db']);
+	public function managerAction(Application $app) {
+		$listRepository = new ListsRepository($app['db']);
 
 		return $app['twig']->render(
-			'lists/manage.html.twig',
-			['lists' => $listsRepository->findAll()]
+			'lists/manager.html.twig',
+			[
+				'lists' => $listRepository->findAll(),
+			]
 		);
 	}
 
