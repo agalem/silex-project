@@ -19,6 +19,20 @@
         .custom-m-b {
             margin-bottom: 30px;
         }
+
+        .custom-bought {
+            font-weight: lighter;
+            text-decoration: line-through;
+        }
+
+        .custom-costInfo-pos {
+            position: absolute;
+            left: 40px;
+            top: -80px;
+        }
+        .table {
+            max-width: 600px;
+        }
     </style>
 {% endblock %}
 
@@ -41,14 +55,24 @@
         <div class="float-right custom-m-b">{{ 'label.no_max_cost'|trans }} <a href="{{ url('list_edit', {'id': activeList.id}) }}" class="text-warning">{{ 'label.edit_current_list'|trans }}</a></div>
     {% endif %}
     <table class="table table-hover">
+        {% if products is defined and products|length %}
         <caption>{{ 'table.caption'|trans({'%name%': activeList.name}) }}</caption>
         <tbody>
+        {% for product in products %}
         <tr>
-            <td class="custom-narrow"><span class="badge badge-primary badge-pill">2</span></th>
-            <th scope="row" class="text-uppercase">Mark</td>
+            <td class="custom-narrow"><span class="badge badge-primary badge-pill">{{ product.quantity }}</span></th>
+            <th scope="row" class="text-uppercase {% if product.isBought == true %} custom-bought {% endif %}">{{ product.name }}</th>
+            {% if product.isBought == false %}
             <td><a href="#" class="text-warning">{{ 'label.edit'|trans }}</a></td>
             <td class="custom-pos_rel"><button type="button" class="btn btn-success custom-btn_table">{{ 'label.bought'|trans }}</button></td>
+            {% else %}
+            <td class="custom-pos_rel"><button type="button" class="btn btn-warning custom-btn_table">{{ 'action.delete'|trans }}</button></td>
+            {% endif %}
         </tr>
+        {% endfor %}
         </tbody>
+        {% else %}
+        <p>{{ 'text.list_is_empty'|trans }}</p>
+        {% endif %}
     </table>
 {% endblock %}

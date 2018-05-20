@@ -11,7 +11,6 @@ class ElementsRepository {
 
 	public function __construct( Connection $db ) {
 		$this->db = $db;
-		$this->elementsRepository = new ElementsRepository($db);
 	}
 
 	public function findAll() {

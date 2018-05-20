@@ -10,6 +10,7 @@ class ListsRepository {
 
 	public function __construct(Connection $db) {
 		$this->db = $db;
+		$this->elementsRepository = new ElementsRepository($db);
 	}
 
 	public function findAll() {
@@ -24,7 +25,11 @@ class ListsRepository {
 			->setParameter(':id', $id, \PDO::PARAM_INT);
 		$result = $queryBuilder->execute()->fetch();
 
-		return  !$result ? [] : $result;
+		if($result) {
+			$result['elements'] = $this->findLinkedElementsIds($result['id']);
+		}
+
+		return $result;
 	}
 
 	public function save($list) {
@@ -40,6 +45,26 @@ class ListsRepository {
 
 	public function delete($list) {
 		return $this->db->delete('lists', ['id' => $list['id']]);
+	}
+
+	public function findLinkedElements($listId)
+	{
+		$elementsIds = $this->findLinkedElementsIds($listId);
+
+		return is_array($elementsIds)
+			? $this->elementsRepository->findById($elementsIds)
+			: [];
+	}
+
+	protected function findLinkedElementsIds($listId) {
+		$queryBuilder = $this->db->createQueryBuilder()
+			->select('el.element_id')
+			->from('elements_lists', 'el')
+			->where('el.list_id = :listId')
+			->setParameter(':listId', $listId, \PDO::PARAM_INT);
+		$result = $queryBuilder->execute()->fetchAll();
+
+		return isset($result) ? array_column($result, 'element_id') : [];
 	}
 
 	protected function queryAll() {

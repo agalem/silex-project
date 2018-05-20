@@ -31,6 +31,9 @@ class ListType extends AbstractType {
 				'scale' => 1,
 			]
 		);
+		$builder->get('elements')->addModelTransformer(
+			new ElementsDataTransformer($options['elements_repository'])
+		);
 	}
 
 	public function getBlockPrefix() {

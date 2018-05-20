@@ -102,6 +102,10 @@
                 <source>title.no_shoppinglists</source>
                 <target>You don't have any shopping lists</target>
             </trans-unit>
+            <trans-unit id="text.list_is_empty">
+                <source>text.list_is_empty</source>
+                <target>There is no products in the list</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

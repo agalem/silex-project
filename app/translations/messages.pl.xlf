@@ -102,6 +102,10 @@
                 <source>title.no_shoppinglists</source>
                 <target>Nie masz jeszcze list zakupów</target>
             </trans-unit>
+            <trans-unit id="text.list_is_empty">
+                <source>text.list_is_empty</source>
+                <target>Lista nie ma jeszcze produktów</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
