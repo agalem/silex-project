@@ -3,50 +3,6 @@
 {% block stylesheets %}
     {{ parent() }}
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-        }
-
-        .header {
-            width: 100%;
-            height: 55px;
-            background-color: #fff;
-            text-align: right;
-            line-height: 50px;
-            padding-right: 30px;
-            color: #fff;
-            font-size: 16px;
-        }
-
-        .main-content {
-            width: 100%;
-            height: 100%;
-            position: absolute;
-            top: 0;
-            left: 0;
-            display: flex;
-            flex-direction: row;
-        }
-
-        .aside {
-            width: 300px;
-            height: 100%;
-
-        }
-
-        .list-margin {
-            margin-top: 30px;
-        }
-
-        .lists-content {
-            height: calc(100% - 100px);
-            width: calc(100% - 100px);
-            position: relative;
-            top: 100px;
-            padding: 0 40px;
-        }
-
         .custom-pos_rel {
             position: relative;
         }
@@ -55,10 +11,6 @@
             position: absolute;
             top:5px;
         }
-
-        .custom-narrow {
-            width: 70px;
-        }
     </style>
 {% endblock %}
 
@@ -66,42 +18,22 @@
     Application
 {% endblock %}
 
-{% block body %}
-    <header class="header">
-        <button class="btn btn-outline-info my-2 my-sm-0" >Sign Out</button>
-    </header>
-    <div class="main-content">
-        <aside class="aside bg-info">
-            <h1 class="card-title text-light m-lg-2">ShopLista</h1>
-            {% if lists is defined and lists|length %}
-                <ul class="list-group list-margin" >
-                    {% for list in lists %}
-                        <a href="{{ url('lists_view', {'id': list.id}) }}" title="{{ list.name }}" class="text-light"><li class="list-group-item bg-info">{{ list.name }}</li></a>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-            <ul class="list-group list-margin">
-                <a href="{{ url('lists_manager') }}" title="{{ 'title.manage_lists'|trans }}" class="text-light"><li class="list-group-item bg-info">{{ 'title.manage_lists'|trans }}</li></a>
-            </ul>
-        </aside>
-        <main class="lists-content">
-            <h4 class="modal-title text-monospace">{{ 'title.manage_lists'|trans }}</h4>
-            {% if lists is defined and lists|length %}
-            <table class="table table-hover">
-                <caption>{{ 'title.manage_lists'|trans }}</caption>
-                <tbody>
-                    {% for list in lists %}
+{% block main %}
+    <h4 class="modal-title text-monospace">{{ 'title.manage_lists'|trans }}</h4>
+    {% if lists is defined and lists|length %}
+        <table class="table table-hover">
+            <caption>{{ 'title.manage_lists'|trans }}</caption>
+            <tbody>
+            {% for list in lists %}
                 <tr>
                     <th scope="row" class="text-uppercase">{{ list.name }}</th>
                     <td class="custom-pos_rel"><a href="{{ url('list_edit', {'id' : list.id}) }}" class="btn btn-warning custom-btn_table">{{ 'label.edit'|trans }}</a></td>
                     <td class="custom-pos_rel"><a href="{{ url('list_delete', {'id': list.id}) }}" class="btn btn-danger text-white custom-btn_table">{{ 'action.delete'|trans }}</a></td>
                 </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            {% else %}
-            <p>{{ 'title.no_shoppinglists'|trans }}</p><a href="{{ url('list_add') }}" class="text-success">{{ 'label.add_list'|trans }}</a>
-            {% endif %}
-        </main>
-    </div>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>{{ 'title.no_shoppinglists'|trans }}</p><a href="{{ url('list_add') }}" class="text-success">{{ 'label.add_list'|trans }}</a>
+    {% endif %}
 {% endblock %}
