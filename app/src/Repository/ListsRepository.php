@@ -55,6 +55,19 @@ class ListsRepository {
 		$this->removeLinkedElements($list['id']);
 	}
 
+	public function getCurrentSpendings($listId) {
+
+		$elementsIds = $this->findLinkedElementsIds($listId);
+
+		$queryBuilder = $this->db->createQueryBuilder();
+		$queryBuilder->select('SUM(e.finalValue) AS finalValue')
+		             ->from('elements', 'e')
+		             ->where('e.id IN (:ids)')
+		             ->setParameter(':ids', $elementsIds, \Doctrine\DBAL\Connection::PARAM_INT_ARRAY);
+
+		$result =  $queryBuilder->execute()->fetch();
+		return $result['finalValue'];
+	}
 
 	public function findLinkedElements($listId)
 	{

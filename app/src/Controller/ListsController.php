@@ -75,6 +75,7 @@ class ListsController implements ControllerProviderInterface {
 		return $app['twig']->render(
 			'lists/view.html.twig',
 			[
+				'currentSpendings' => $listsRepository->getCurrentSpendings($id),
 				'lists' => $listsRepository->findAll(),
 				'activeList' => $listsRepository->findOneById($id),
 				'products' => $listsRepository->findLinkedElements($id),
