@@ -238,8 +238,9 @@ class ListsController implements ControllerProviderInterface {
 		$form->handleRequest($request);
 
 		if($form->isSubmitted() && $form->isValid()) {
-			$elementsRepository->save($form->getData());
-			$listsRepository->saveElement($id);
+
+			$listsRepository->updateModiefiedDate($id);
+			$elementsRepository->save($id, $form->getData());
 
 			$app['session']->getFlashBag()->add(
 				'messages',

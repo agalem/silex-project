@@ -4,6 +4,7 @@ namespace Repository;
 
 
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\DBALException;
 
 class ElementsRepository {
 
@@ -47,7 +48,7 @@ class ElementsRepository {
 		return $queryBuilder->execute()->fetchAll();
 	}
 
-	public function save($element)
+	public function save($listId, $element)
 	{
 		/*if (isset($element['id']) && ctype_digit((string) $element['id'])) {
 			// update record
@@ -64,6 +65,31 @@ class ElementsRepository {
 		}*/
 		$this->db->beginTransaction();
 
+		try {
+			$currentDateTime = new \DateTime();
+			$element['modifiedAt'] = $currentDateTime->format('Y-m-d H:i:s');
+			if(isset($element['id']) && ctype_digit((string) $element['id'])) {
+				$elementId = $element['id'];
+				unset($element['id']);
+				$this->removeLinkedElements($elementId);
+				$this->addLinkedElements($listId, $elementId);
+				$this->db->update('elements', $element, ['id' => $elementId]);
+			} else {
+				$element['createdAt'] = $currentDateTime->format('Y-m-d H:i:s');
+				$this->db->insert('elements', $element);
+				$elementId = $this->db->lastInsertId();
+				$this->addLinkedElements($listId, $elementId);
+			}
+			$this->db->commit();
+		} catch (DBALException $e) {
+			$this->db->rollBack();
+			throw $e;
+		}
+
+	}
+
+	protected function removeLinkedElements($elementId) {
+		return $this->db->delete('elements_lists', ['element_id' => $elementId]);
 	}
 
 	protected function addLinkedElements($listId, $elementsIds) {
