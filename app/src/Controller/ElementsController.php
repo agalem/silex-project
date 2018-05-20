@@ -28,11 +28,15 @@ class ElementsController implements ControllerProviderInterface {
 		           ->assert('id', '[1-9]\d*' )
 		           ->bind('element_edit');
 
+		$controller->match('/{id}/buy', [$this, 'buyAction'])
+		           ->method('GET|POST')
+		           ->assert('id', '[1-9]\d*' )
+		           ->bind('element_buy');
+
 		$controller->match('/{id}/delete', [$this, 'deleteAction'])
 		           ->method('POST|GET')
 		           ->assert('id', '[1-9]\d*' )
 		           ->bind('element_delete');
-
 
 		return $controller;
 	}
@@ -83,6 +87,55 @@ class ElementsController implements ControllerProviderInterface {
 			]
 		);
 	}
+
+	public function buyAction(Application $app, $id, Request $request) {
+
+		$elementsRepository = new ElementsRepository($app['db']);
+		$listsRepository = new ListsRepository($app['db']);
+		$element = $elementsRepository->findOneById($id);
+		$connectedList = $listsRepository->getConnectedList($id);
+		$listId = $connectedList['list_id'];
+
+		if(!$element) {
+			$app['session']->getFlashBag()->add(
+				'messages',
+				[
+					'type' => 'warning',
+					'message' => 'message.record_not_found',
+				]
+			);
+
+			return $app->redirect($app['url_generator']->generate('lists_view', array('id' => $listId)));
+		}
+
+		$form = $app['form.factory']->createBuilder(ElementType::class, $element)->getForm();
+		$form->handleRequest($request);
+
+		if($form->isSubmitted() && $form->isValid()){
+			$elementsRepository->buy($form->getData());
+
+			$app['session']->getFlashBag()->add(
+				'messages',
+				[
+					'type' => 'success',
+					'message' => 'message.element_successfully_edited',
+				]
+			);
+
+			return $app->redirect($app['url_generator']->generate('lists_view', array('id' => $listId)), 301);
+		}
+
+		return $app['twig']->render(
+			'elements/buy.html.twig',
+			[
+				'editedElement' => $element,
+				'form' => $form->createView(),
+				'lists' => $listsRepository->findAll(),
+				'previousList' => $listId,
+			]
+		);
+	}
+
 
 	public function deleteAction(Application $app, $id, Request $request) {
 		$elementsRepository = new ElementsRepository($app['db']);

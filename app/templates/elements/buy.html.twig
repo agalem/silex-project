@@ -11,18 +11,8 @@
             margin-top: 20px;
         }
 
-        .custom-m-r {
-            left: -50px;
-        }
-
-        .horizontal-line {
-            height: 1px;
-            width: 100%;
-            background-color: black;
-            margin: 20px 0;
-        }
-        .table {
-            max-width: 650px;
+        .custom-hide {
+            display: none;
         }
     </style>
 {% endblock %}
@@ -32,10 +22,10 @@
 {% endblock %}
 
 {% block main %}
-    <h3 class="modal-title text-monospace custom-m-b">{{ 'label.edit_element'|trans({'%name%': editedElement.name}) }}</h3>
+    <h3 class="modal-title text-monospace custom-m-b">{{ 'label.buy_element'|trans({'%name%': editedElement.name}) }}</h3>
     <div class="form-group">
-        {{ form_start(form, { method: 'post', action: url('element_edit', {'id' : editedElement.id}) }) }}
-        <div>
+        {{ form_start(form, { method: 'post', action: url('element_buy', {'id' : editedElement.id }) }) }}
+        <div class="custom-hide">
             {{ form_label(form.name, 'label.name'|trans) }}<br/>
             <div class="form-input">
                 {{ form_widget(form.name) }}
@@ -43,7 +33,7 @@
             </div>
         </div>
         <br/>
-        <div>
+        <div class="custom-hide">
             {{ form_label(form.isBought, 'label.isBought'|trans) }}<br/>
             <div class="form-input">
                 {{ form_widget(form.isBought) }}

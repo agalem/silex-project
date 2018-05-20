@@ -80,6 +80,27 @@ class ElementsRepository {
 		$this->db->delete('elements', ['id' => $element['id']]);
 	}
 
+	public function buy($element) {
+		$this->db->beginTransaction();
+
+		try {
+			$currentDateTime = new \DateTime();
+			$element['modifiedAt'] = $currentDateTime->format('Y-m-d H:i:s');
+			$element['isBought'] = 1;
+			if(isset($element['id']) && ctype_digit((string) $element['id'])) {
+				$elementId = $element['id'];
+				unset($element['id']);
+				$this->db->update('elements', $element, ['id' => $elementId]);
+			} else {
+				$element['createdAt'] = $currentDateTime->format('Y-m-d H:i:s');
+				$this->db->insert('elements', $element);
+			}
+			$this->db->commit();
+		} catch (DBALException $e) {
+			$this->db->rollBack();
+			throw $e;
+		}
+	}
 
 	protected function removeLinkedElements($elementId) {
 		return $this->db->delete('elements_lists', ['element_id' => $elementId]);

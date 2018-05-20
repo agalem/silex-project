@@ -54,6 +54,14 @@
                 <source>label.bought</source>
                 <target>Kupione</target>
             </trans-unit>
+            <trans-unit id="label.isBought">
+                <source>label.isBought</source>
+                <target>Czy kupione ?</target>
+            </trans-unit>
+            <trans-unit id="label.buy_element">
+                <source>label.buy_element</source>
+                <target>Kupiono '%name%'</target>
+            </trans-unit>
             <trans-unit id="label.add_list">
                 <source>label.add_list</source>
                 <target>Utwórz nową listę</target>

@@ -169,6 +169,7 @@ class ListsController implements ControllerProviderInterface {
 		);
 	}
 
+
 	public function deleteAction(Application $app, $id, Request $request) {
 		$listsRepository = new ListsRepository($app['db']);
 		$list = $listsRepository->findOneById($id);
