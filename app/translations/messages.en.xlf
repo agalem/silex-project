@@ -66,6 +66,10 @@
                 <source>label.edit_list</source>
                 <target>Edit list '%name%'</target>
             </trans-unit>
+            <trans-unit id="label.edit_element">
+                <source>label.edit_element</source>
+                <target>Edit element '%name%'</target>
+            </trans-unit>
             <trans-unit id="label.edit_current_list">
                 <source>label.edit_current_list</source>
                 <target>Edit list</target>
@@ -73,6 +77,10 @@
             <trans-unit id="label.delete_list">
                 <source>label.delete_list</source>
                 <target>Do you want to delete list '%name%'?</target>
+            </trans-unit>
+            <trans-unit id="label.delete_element">
+                <source>label.delete_element</source>
+                <target>Do you want to delete product '%name%'?</target>
             </trans-unit>
             <trans-unit id="label.manage_lists">
                 <source>label.manage_lists</source>

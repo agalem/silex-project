@@ -50,19 +50,6 @@ class ElementsRepository {
 
 	public function save($listId, $element)
 	{
-		/*if (isset($element['id']) && ctype_digit((string) $element['id'])) {
-			// update record
-			$id = $element['id'];
-			unset($element['id']);
-
-			return $this->db->update('elements', $element, ['id' => $id]);
-		} else {
-			// add new record
-			$this->db->insert('elements', $element);
-			$element['id'] = $this->db->lastInsertId();
-
-			return $element;
-		}*/
 		$this->db->beginTransaction();
 
 		try {
@@ -87,6 +74,12 @@ class ElementsRepository {
 		}
 
 	}
+
+	public function delete($element) {
+		$this->removeLinkedElements($element['id']);
+		$this->db->delete('elements', ['id' => $element['id']]);
+	}
+
 
 	protected function removeLinkedElements($elementId) {
 		return $this->db->delete('elements_lists', ['element_id' => $elementId]);

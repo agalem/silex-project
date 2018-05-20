@@ -51,7 +51,8 @@ class ListsRepository {
 	}
 
 	public function delete($list) {
-		return $this->db->delete('lists', ['id' => $list['id']]);
+		$this->db->delete('lists', ['id' => $list['id']]);
+		$this->removeLinkedElements($list['id']);
 	}
 
 
@@ -62,6 +63,18 @@ class ListsRepository {
 		return is_array($elementsIds)
 			? $this->elementsRepository->findById($elementsIds)
 			: [];
+	}
+
+	public function getConnectedList($elementId) {
+		$queryBuilder = $this->db->createQueryBuilder();
+
+		$queryBuilder->select('el.list_id')
+		             ->from('elements_lists', 'el')
+		             ->where('el.element_id = :elementId')
+		             ->setParameter(':elementId', $elementId);
+
+		$result = $queryBuilder->execute()->fetch();
+		return $result;
 	}
 
 	protected function findLinkedElementsIds($listId) {

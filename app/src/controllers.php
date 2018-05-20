@@ -12,6 +12,7 @@ $app->get('/', function () use ($app) {
 
 $app->mount('/hello', new \Controller\HelloController());
 $app->mount('/lists', new ListsController());
+$app->mount('/element', new \Controller\ElementsController());
 
 $app->error(function (\Exception $e, Request $request, $code) use ($app) {
     if ($app['debug']) {

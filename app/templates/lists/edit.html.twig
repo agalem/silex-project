@@ -63,10 +63,8 @@
                 <tr>
                     <td class="custom-narrow"><span class="badge badge-primary badge-pill">{{ product.quantity }}</span></th>
                     <th scope="row" class="text-uppercase {% if product.isBought == true %} custom-bought {% endif %}">{{ product.name }}</th>
-                    {% if product.isBought == false %}
-                        <td class="custom-pos_rel"><a href="#" class="custom-btn_table custom-m-r"><button role="button" class="btn btn-warning">{{ 'label.edit'|trans }}</button></a></td>
-                        <td class="custom-pos_rel"><a href="#" class="custom-btn_table"><button type="button" class="btn btn-danger">{{ 'action.delete'|trans }}</button></a></td>
-                    {% endif %}
+                    <td class="custom-pos_rel"><a href="{{ url('element_edit', {'id' : product.id}) }}" class="custom-btn_table custom-m-r"><button role="button" class="btn btn-warning">{{ 'label.edit'|trans }}</button></a></td>
+                    <td class="custom-pos_rel"><a href="{{ url('element_delete', {'id' : product.id }) }}" class="custom-btn_table"><button type="button" class="btn btn-danger">{{ 'action.delete'|trans }}</button></a></td>
                 </tr>
             {% endfor %}
             </tbody>
