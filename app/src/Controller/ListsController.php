@@ -72,6 +72,10 @@ class ListsController implements ControllerProviderInterface {
 			return $app->redirect($app['url_generator']->generate('lists_index'));
 		}
 
+		$currentSpendigs = $listsRepository->getCurrentSpendings($id);
+		$activeList = $listsRepository->findOneById($id);
+		$plannedSpendings = $activeList['maxCost'];
+
 		return $app['twig']->render(
 			'lists/view.html.twig',
 			[
@@ -79,6 +83,8 @@ class ListsController implements ControllerProviderInterface {
 				'lists' => $listsRepository->findAll(),
 				'activeList' => $listsRepository->findOneById($id),
 				'products' => $listsRepository->findLinkedElements($id),
+				'plannedSpendings' => $plannedSpendings,
+				'spendPercent' => round($currentSpendigs / $plannedSpendings * 100),
 			]
 		);
 	}

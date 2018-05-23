@@ -100,7 +100,7 @@
             </trans-unit>
             <trans-unit id="label.max_cost">
                 <source>label.max_cost</source>
-                <target>Planowana kwota zakupów  :</target>
+                <target>Planowana kwota zakupów*  :</target>
             </trans-unit>
             <trans-unit id="label.no_max_cost">
                 <source>label.no_max_cost</source>
@@ -118,6 +118,14 @@
                 <source>title.choose_list</source>
                 <target>Wybierz listę</target>
             </trans-unit>
+            <trans-unit id="label.planned_spendings">
+                <source>label.planned_spendings</source>
+                <target>Planowany koszt :</target>
+            </trans-unit>
+            <trans-unit id="label.current_spendings">
+                <source>label.current_spendings</source>
+                <target>Dotychczas wydano :</target>
+            </trans-unit>
             <trans-unit id="table.caption">
                 <source>table.caption</source>
                 <target>Lista rzeczy w liście zakupów: %name% </target>
@@ -129,6 +137,10 @@
             <trans-unit id="title.no_shoppinglists">
                 <source>title.no_shoppinglists</source>
                 <target>Nie masz jeszcze list zakupów</target>
+            </trans-unit>
+            <trans-unit id="title.add_list">
+                <source>title.add_list</source>
+                <target>Utwórz nową listę</target>
             </trans-unit>
             <trans-unit id="text.list_is_empty">
                 <source>text.list_is_empty</source>

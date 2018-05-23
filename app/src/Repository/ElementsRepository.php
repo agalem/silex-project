@@ -56,6 +56,7 @@ class ElementsRepository {
 			$currentDateTime = new \DateTime();
 			$element['modifiedAt'] = $currentDateTime->format('Y-m-d H:i:s');
 			$element['finalValue'] = $element['value']*$element['quantity'];
+			$element['isBought'] = 0;
 			if(isset($element['id']) && ctype_digit((string) $element['id'])) {
 				$elementId = $element['id'];
 				unset($element['id']);

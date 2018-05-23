@@ -10,6 +10,9 @@
         .custom-m-t {
             margin-top: 20px;
         }
+        .custom-hidden {
+            display: none;
+        }
     </style>
 {% endblock %}
 
@@ -42,6 +45,13 @@
             <div class="form-input">
                 {{ form_widget(form.quantity) }}
                 {{ form_errors(form.quantity) }}
+            </div>
+        </div>
+        <div class="custom-hidden">
+            {{ form_label(form.isBought, 'label.isBought'|trans) }}<br/>
+            <div class="form-input">
+                {{ form_widget(form.isBought) }}
+                {{ form_errors(form.isBought) }}
             </div>
         </div>
         <input type="submit" value="{{ 'action.save'|trans }}" class="btn btn-success custom-m-t" />

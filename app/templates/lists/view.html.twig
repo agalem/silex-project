@@ -44,10 +44,12 @@
     <h3 class="modal-title text-monospace">{{ activeList.name }}</h3>
     {%  if activeList.maxCost %}
     <div class="custom-costInfo-pos">
-        <div class="float-right">{{ 'label.max_cost'|trans }}<span class="font-weight-bold text-monospace">{{ activeList.maxCost }}/{{ currentSpendings }}</span>
+        <div class="float-right">
+            {{ 'label.planned_spendings'|trans }}<span class="font-weight-bold text-monospace">{{ plannedSpendings }}</span><br/>
+            {{ 'label.current_spendings'|trans }}<span class="font-weight-bold text-monospace">{{ currentSpendings }}</span>
             <!--TO DO: Dodać ,,dotychczas wydano" obliczane na podstawie kupionych rzeczy-->
             <div class="progress">
-                <div class="progress-bar bg-success" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">25%</div>
+                <div class="progress-bar bg-success" role="progressbar" style="width: {{ spendPercent }}%" aria-valuenow="{{ spendPercent }}" aria-valuemin="0" aria-valuemax="100">{{ spendPercent }}%</div>
             </div>
         </div>
     </div>
