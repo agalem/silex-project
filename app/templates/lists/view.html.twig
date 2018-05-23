@@ -49,7 +49,7 @@
             {{ 'label.current_spendings'|trans }}<span class="font-weight-bold text-monospace">{{ currentSpendings }}</span>
             <!--TO DO: Dodać ,,dotychczas wydano" obliczane na podstawie kupionych rzeczy-->
             <div class="progress">
-                <div class="progress-bar bg-success" role="progressbar" style="width: {{ spendPercent }}%" aria-valuenow="{{ spendPercent }}" aria-valuemin="0" aria-valuemax="100">{{ spendPercent }}%</div>
+                <div class="progress-bar {{ progressBarClass }}" role="progressbar" style="width: {{ spendPercent }}%;" aria-valuenow="{{ spendPercent }}" aria-valuemin="0" aria-valuemax="100">{{ spendPercent }}%</div>
             </div>
         </div>
     </div>

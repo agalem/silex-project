@@ -3,6 +3,7 @@
 namespace Repository;
 
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\DBALException;
 
 class ListsRepository {
 
@@ -25,21 +26,30 @@ class ListsRepository {
 		             ->setParameter(':id', $id, \PDO::PARAM_INT);
 		$result = $queryBuilder->execute()->fetch();
 
-		if ($result) {
-			$result['elements'] = $this->findLinkedElements($result['id']);
-		}
 
 		return $result;
 	}
 
 	public function save($list) {
-		if(isset($list['id']) && ctype_digit((string) $list['id'])) {
-			$id = $list['id'];
-			unset($list['id']);
+		$this->db->beginTransaction();
 
-			return $this->db->update('lists', $list, ['id' => $id]);
-		} else {
-			return $this->db->insert('lists', $list);
+		try {
+			$currentDateTime = new \DateTime();
+			$list['modifiedAt'] = $currentDateTime->format('Y-m-d H:i:s');
+
+			if(isset($list['id']) && ctype_digit((string) $list['id'])) {
+				$listId = $list['id'];
+				unset($list['id']);
+
+				$this->db->update('lists', $list, ['id' => $listId]);
+			} else {
+				$list['createdAt'] = $currentDateTime->format('Y-m-d H:i:s');
+				$this->db->insert('lists', $list);
+			}
+			$this->db->commit();
+		} catch (DBALException $e) {
+			$this->db->rollBack();
+			throw $e;
 		}
 	}
 

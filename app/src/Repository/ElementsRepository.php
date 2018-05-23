@@ -65,6 +65,7 @@ class ElementsRepository {
 				$this->db->update('elements', $element, ['id' => $elementId]);
 			} else {
 				$element['createdAt'] = $currentDateTime->format('Y-m-d H:i:s');
+				$element['finalValue'] = 0;
 				$this->db->insert('elements', $element);
 				$elementId = $this->db->lastInsertId();
 				$this->addLinkedElements($listId, $elementId);

@@ -76,6 +76,20 @@ class ListsController implements ControllerProviderInterface {
 		$activeList = $listsRepository->findOneById($id);
 		$plannedSpendings = $activeList['maxCost'];
 
+		if($plannedSpendings == null) {
+			$spendPercent = 0;
+		} else {
+			$spendPercent = round($currentSpendigs / $plannedSpendings * 100);
+		}
+
+		if($spendPercent < 50) {
+			$progressBarClass = 'bg-success text-light';
+		} else if ($spendPercent >= 50 && $spendPercent < 80) {
+			$progressBarClass = 'bg-warning text-dark';
+		} else {
+			$progressBarClass = 'bg-danger text-light';
+		}
+
 		return $app['twig']->render(
 			'lists/view.html.twig',
 			[
@@ -84,7 +98,8 @@ class ListsController implements ControllerProviderInterface {
 				'activeList' => $listsRepository->findOneById($id),
 				'products' => $listsRepository->findLinkedElements($id),
 				'plannedSpendings' => $plannedSpendings,
-				'spendPercent' => round($currentSpendigs / $plannedSpendings * 100),
+				'spendPercent' => $spendPercent,
+				'progressBarClass' => $progressBarClass,
 			]
 		);
 	}
@@ -105,7 +120,7 @@ class ListsController implements ControllerProviderInterface {
 
 		$list = [];
 
-		$form = $app['form.factory']->createBuilder(ListType::class, $list, ['elements_repository' => new ElementsRepository($app['db'])])->getForm();
+		$form = $app['form.factory']->createBuilder(ListType::class, $list)->getForm();
 		$form->handleRequest($request);
 
 		if($form->isSubmitted() && $form->isValid()) {
@@ -119,7 +134,7 @@ class ListsController implements ControllerProviderInterface {
 				]
 			);
 
-			return $app->redirect($app['url_generator']->generate('lists_index'), 301);
+			return $app->redirect($app['url_generator']->generate('lists_manager'), 301);
 		}
 
 		return $app['twig']->render(
@@ -135,7 +150,6 @@ class ListsController implements ControllerProviderInterface {
 	public function editAction(Application $app, $id, Request $request) {
 		$listsRepository = new ListsRepository($app['db']);
 		$list = $listsRepository->findOneById($id);
-
 		if(!$list) {
 			$app['session']->getFlashBag()->add(
 				'messages',
@@ -144,16 +158,12 @@ class ListsController implements ControllerProviderInterface {
 					'message' => 'message.record_not_found',
 				]
 			);
-
 			return $app->redirect($app['url_generator']->generate('lists_index'));
 		}
-
-		$form = $app['form.factory']->createBuilder(ListType::class, $list, ['elements_repository' => new ElementsRepository($app['db'])])->getForm();
+		$form = $app['form.factory']->createBuilder(ListType::class, $list)->getForm();
 		$form->handleRequest($request);
-
 		if($form->isSubmitted() && $form->isValid()){
 			$listsRepository->save($form->getData());
-
 			$app['session']->getFlashBag()->add(
 				'messages',
 				[
@@ -161,10 +171,8 @@ class ListsController implements ControllerProviderInterface {
 					'message' => 'message.element_successfully_edited',
 				]
 			);
-
 			return $app->redirect($app['url_generator']->generate('lists_view', array('id' => $id)), 301);
 		}
-
 		return $app['twig']->render(
 			'lists/edit.html.twig',
 			[
