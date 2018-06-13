@@ -14,17 +14,20 @@ class ElementsRepository {
 		$this->db = $db;
 	}
 
-	public function findAll() {
+	public function findAll($userId) {
 		$queryBuilder = $this->queryAll();
+		$queryBuilder->where('u.createdBy = :userId')
+		             ->setParameter(':userId', $userId, \PDO::PARAM_INT);
 
 		return $queryBuilder->execute()->fetchAll();
 	}
 
 
-	public function findOneById( $id ) {
+	public function findOneById( $id , $userId) {
 		$queryBuilder = $this->queryAll();
-		$queryBuilder->where( 'e.id = :id' )
-		             ->setParameter( ':id', $id, \PDO::PARAM_INT );
+		$queryBuilder->where( 'e.id = :id AND e.createdBy = :userId' )
+		             ->setParameter( ':id', $id, \PDO::PARAM_INT )
+		             ->setParameter(':userId', $userId, \PDO::PARAM_INT);
 		$result = $queryBuilder->execute()->fetch();
 
 		return !$result ? [] : $result;
@@ -48,7 +51,7 @@ class ElementsRepository {
 		return $queryBuilder->execute()->fetchAll();
 	}
 
-	public function save($listId, $element)
+	public function save($listId, $element, $userId)
 	{
 		$this->db->beginTransaction();
 
@@ -57,6 +60,7 @@ class ElementsRepository {
 			$element['modifiedAt'] = $currentDateTime->format('Y-m-d H:i:s');
 			$element['finalValue'] = $element['value']*$element['quantity'];
 			$element['isBought'] = 0;
+			$element['createdBy'] = $userId;
 			if(isset($element['id']) && ctype_digit((string) $element['id'])) {
 				$elementId = $element['id'];
 				unset($element['id']);
@@ -128,7 +132,7 @@ class ElementsRepository {
 	protected function queryAll() {
 		$queryBuilder = $this->db->createQueryBuilder();
 
-		return $queryBuilder->select('e.id', 'e.name', 'e.value', 'e.quantity', 'e.isBought')
+		return $queryBuilder->select('e.id', 'e.name', 'e.value', 'e.quantity', 'e.isBought', 'e.createdBy')
 		                    ->from('elements', 'e');
 	}
 }

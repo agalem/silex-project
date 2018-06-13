@@ -3,6 +3,8 @@
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Controller\ListsController;
+use Controller\AuthController;
+use Controller\AdminController;
 
 //Request::setTrustedProxies(array('127.0.0.1'));
 
@@ -10,9 +12,11 @@ $app->get('/', function () use ($app) {
 	return $app['twig']->render('index.html.twig');
 });
 
-$app->mount('/hello', new \Controller\HelloController());
 $app->mount('/lists', new ListsController());
 $app->mount('/element', new \Controller\ElementsController());
+$app->mount('/auth', new AuthController());
+$app->mount('/admin', new AdminController());
+
 
 $app->error(function (\Exception $e, Request $request, $code) use ($app) {
     if ($app['debug']) {
