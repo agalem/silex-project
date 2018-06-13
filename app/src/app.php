@@ -8,6 +8,7 @@ use Silex\Provider\DoctrineServiceProvider;
 use Silex\Provider\FormServiceProvider;
 use Silex\Provider\ValidatorServiceProvider;
 use \Silex\Provider\SessionServiceProvider;
+use Silex\Provider\SecurityServiceProvider;
 
 
 $app = new Application();
@@ -39,7 +40,7 @@ $app->register(new DoctrineServiceProvider(),
 		'db.options' => [
 			'driver' => 'pdo_mysql',
 			'host' => 'localhost',
-			'dbname' => 'si_project',
+			'dbname' => '15_lempaszek',
 			'user' => 'si_admin',
 			'password' => 'password',
 			'charset' => 'utf8',
@@ -53,5 +54,42 @@ $app->register(new FormServiceProvider());
 $app->register(new ValidatorServiceProvider());
 $app->register(new SessionServiceProvider());
 
+$app->register(
+	new SecurityServiceProvider(),
+	[
+		'security.firewalls' => [
+			'dev' => [
+				'pattern' => '^/(_(profiler|wdt)|css|images|js)/',
+				'security' => false,
+			],
+			'main' => [
+				'pattern' => '^.*$',
+				'form' => [
+					'login_path' => 'auth_login',
+					'check_path' => 'auth_login_check',
+					'default_target_path' => 'lists_index',
+					'username_parameter' => 'login_type[login]',
+					'password_parameter' => 'login_type[password]',
+				],
+				'anonymous' => true,
+				'logout' => [
+					'logout_path' => 'auth_logout',
+					'target_url' => 'lists_index',
+				],
+				'users' => function () use ($app) {
+					return new Provider\UserProvider($app['db']);
+				},
+			],
+		],
+		'security.access_rules' => [
+			['^/auth.+$', 'IS_AUTHENTICATED_ANONYMOUSLY'],
+			['^/admin', 'ROLE_ADMIN'],
+			['^/.+$', 'ROLE_USER']
+		],
+		'security.role_hierarchy' => [
+			'ROLE_ADMIN' => ['ROLE_USER'],
+		],
+	]
+);
 
 return $app;

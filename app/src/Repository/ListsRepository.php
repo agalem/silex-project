@@ -14,29 +14,32 @@ class ListsRepository {
 		$this->elementsRepository = new ElementsRepository($db);
 	}
 
-	public function findAll() {
+	public function findAll($userId) {
 		$queryBuilder = $this->queryAll();
+		$queryBuilder->where('l.createdBy = :userId')
+		             ->setParameter(':userId', $userId, \PDO::PARAM_INT);
 
 		return $queryBuilder->execute()->fetchAll();
 	}
 
-	public function findOneById($id) {
+	public function findOneById($id, $userId) {
 		$queryBuilder = $this->queryAll();
-		$queryBuilder->where('l.id = :id')
-		             ->setParameter(':id', $id, \PDO::PARAM_INT);
+		$queryBuilder->where('l.id = :id AND l.createdBy = :userId')
+		             ->setParameter(':id', $id, \PDO::PARAM_INT)
+		             ->setParameter(':userId', $userId, \PDO::PARAM_INT);
 		$result = $queryBuilder->execute()->fetch();
 
 
 		return $result;
 	}
 
-	public function save($list) {
+	public function save($list, $userId) {
 		$this->db->beginTransaction();
 
 		try {
 			$currentDateTime = new \DateTime();
 			$list['modifiedAt'] = $currentDateTime->format('Y-m-d H:i:s');
-
+			$list['createdBy'] = $userId;
 			if(isset($list['id']) && ctype_digit((string) $list['id'])) {
 				$listId = $list['id'];
 				unset($list['id']);
@@ -61,6 +64,8 @@ class ListsRepository {
 	}
 
 	public function delete($list) {
+		$linkedElementsIds = $this->findLinkedElementsIds($list['id']);
+
 		$this->db->delete('lists', ['id' => $list['id']]);
 		$this->removeLinkedElements($list['id']);
 	}
@@ -112,13 +117,32 @@ class ListsRepository {
 	}
 
 	protected function removeLinkedElements($listId) {
-		return $this->db->delete('elements_lists', ['list_id' => $listId]);
+
+		$this->db->beginTransaction();
+
+		try {
+
+			$this->db->delete('elements_lists', ['list_id' => $listId]);
+
+			$elementsIds = $this->findLinkedElementsIds($listId);
+
+			foreach ($elementsIds as $elementId) {
+				$this->db->delete('elements', ['id' => $elementId]);
+			}
+
+			$this->db->commit();
+
+		} catch (DBALException $exception) {
+
+			throw $exception;
+
+		}
 	}
 
 	protected function queryAll() {
 		$queryBuilder = $this->db->createQueryBuilder();
 
-		return $queryBuilder->select('l.id', 'l.name', 'l.maxCost')
+		return $queryBuilder->select('l.id', 'l.name', 'l.maxCost', 'l.createdBy')
 			->from('lists', 'l');
 	}
 
