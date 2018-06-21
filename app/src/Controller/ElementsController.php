@@ -73,6 +73,7 @@ class ElementsController implements ControllerProviderInterface {
 		$form->handleRequest($request);
 
 		if($form->isSubmitted() && $form->isValid()){
+
 			$elementsRepository->save($listId, $form->getData(), $userId);
 
 			$app['session']->getFlashBag()->add(

@@ -47,6 +47,13 @@
                 {{ form_errors(form.quantity) }}
             </div>
         </div>
+        <div class="form-group ">
+            {{ form_label(form.isItem, 'label.isItem'|trans) }}
+            <div class="form-input">
+                {{ form_widget(form.isItem) }}
+                {{ form_errors(form.isItem) }}
+            </div>
+        </div>
         <div class="custom-hidden">
             {{ form_label(form.isBought, 'label.isBought'|trans) }}<br/>
             <div class="form-input">
@@ -54,6 +61,7 @@
                 {{ form_errors(form.isBought) }}
             </div>
         </div>
+
         <input type="submit" value="{{ 'action.save'|trans }}" class="btn btn-success custom-m-t" />
         {{ form_end(form) }}
     </div>

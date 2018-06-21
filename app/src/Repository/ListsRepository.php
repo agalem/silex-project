@@ -33,6 +33,17 @@ class ListsRepository {
 		return $result;
 	}
 
+	public function findOneByName($name, $userId) {
+		$queryBuilder = $this->queryAll();
+		$queryBuilder->where('l.name = :name AND l.createdBy = :userId')
+		             ->setParameter(':name', $name, \PDO::PARAM_STR)
+		             ->setParameter(':userId', $userId, \PDO::PARAM_INT);
+		$result = $queryBuilder->execute()->fetch();
+
+
+		return $result;
+	}
+
 	public function save($list, $userId) {
 		$this->db->beginTransaction();
 

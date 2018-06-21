@@ -172,6 +172,43 @@ class UserRepository
 
 	}
 
+	public function deleteUser($id) {
+
+		$this->db->beginTransaction();
+
+		try {
+
+			$this->db->delete('elements', ['createdBy' => $id]);
+			$this->db->delete('lists', ['createdBy' => $id]);
+			$this->db->delete('users', ['id' => $id]);
+
+			$this->db->commit();
+		} catch (DBALException $exception) {
+			$this->db->rollBack();
+
+			return [];
+		}
+
+	}
+
+	public function updateUserData($id, $userData) {
+
+		try {
+
+			$user = $this->findUserById($id);
+
+			if(!$user) {
+				return [];
+			}
+
+			$this->db->update('users', $userData, ['id' => $id]);
+
+		} catch (DBALException $exception) {
+			return [];
+		}
+
+	}
+
 	private function queryAll() {
 
 		try {

@@ -58,6 +58,18 @@ class ElementType extends AbstractType {
 				],
 			]
 		);
+		$builder->add(
+			'isItem',
+			ChoiceType::class,
+			[
+				'label' => 'label.isItem',
+				'required' => true,
+				'choices' => [
+					'label.item' => 1,
+					'label.weight' => 0,
+				],
+			]
+		);
 	}
 
 	public function getBlockPrefix() {

@@ -132,7 +132,7 @@ class ElementsRepository {
 	protected function queryAll() {
 		$queryBuilder = $this->db->createQueryBuilder();
 
-		return $queryBuilder->select('e.id', 'e.name', 'e.value', 'e.quantity', 'e.isBought', 'e.createdBy')
+		return $queryBuilder->select('e.id', 'e.name', 'e.value', 'e.quantity', 'e.isBought', 'e.createdBy', 'e.isItem')
 		                    ->from('elements', 'e');
 	}
 }

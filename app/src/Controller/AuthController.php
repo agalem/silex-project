@@ -64,12 +64,30 @@ class AuthController implements ControllerProviderInterface
 	public  function createAction(Application $app, Request $request) {
 		$user = [];
 
+
 		$form=$app['form.factory']->createBuilder(AccountType::class, $user)->getForm();
 		$form->handleRequest($request);
 
+
+
 		if($form->isSubmitted() && $form->isValid()) {
 			$usersRepository = new UserRepository($app['db']);
+
+
 			$newUser = $form->getData();
+			$ifExists = $usersRepository->getUserByLogin($newUser['login']);
+
+			if($ifExists != null) {
+				$app['session']->getFlashBag()->add(
+					'messages',
+					[
+						'type' => 'danger',
+						'message' => 'message.username_exists',
+					]
+				);
+				return $app->redirect($app['url_generator']->generate('auth_create'), 301);
+			}
+
 			$newUser['password'] = $app['security.encoder.bcrypt']->encodePassword($newUser['password'], '');
 			$usersRepository->save($newUser);
 

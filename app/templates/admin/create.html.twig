@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'title.auth_login'|trans }}{% endblock %}
+
+{% block main %}
+    {% form_theme form with ['bootstrap_3_horizontal_layout.html.twig', 'form/form_errors.html.twig'] %}
+
+
+    {% if error is defined and error|length %}
+        {% include 'default/_single_alert_message.html.twig' with {
+        is_single_message: true,
+        is_dismissible: false,
+        type: 'danger',
+        message: error,
+        } %}
+    {% endif %}
+
+
+    <div class="form-group form-signin">
+        <h1 class="h3 mb-3 font-weight-normal">{{ 'title.auth_create'|trans }}</h1>
+        {{ form_start(form, { method: 'post', action: path('admin_add') }) }}
+        <div class="form-group row">
+            <span class="col-sm-2 col-form-label">{{ form_label(form.login, 'label.login'|trans) }}</span>
+            <div class="col-sm-8">
+                {{ form_widget(form.login) }}
+                {{ form_errors(form.login) }}
+            </div>
+        </div>
+        <div class="form-group row">
+            <span class="col-sm-2 col-form-label">{{ form_label(form.password, 'label.password'|trans) }}</span>
+            <div class="col-sm-8">
+                {{ form_widget(form.password) }}
+                {{ form_errors(form.password) }}
+            </div>
+        </div>
+
+        <input type="submit" value="{{ 'action.create'|trans }}" class="btn btn-primary mb-2"/>
+        {{ form_end(form) }}
+    </div>
+
+    <br/><br/>
+
+    <a href="{{ url('admin_manager') }}">{{ 'label.return'|trans }}</a>
+{% endblock %}

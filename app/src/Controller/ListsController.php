@@ -13,8 +13,17 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 
+/**
+ * Class ListsController
+ * @package Controller
+ */
 class ListsController implements ControllerProviderInterface {
 
+	/**
+	 * @param Application $app
+	 *
+	 * @return mixed
+	 */
 	public function connect( Application $app ) {
 		$controller = $app['controllers_factory'];
 
@@ -48,6 +57,11 @@ class ListsController implements ControllerProviderInterface {
 		return $controller;
 	}
 
+	/**
+	 * @param Application $app
+	 *
+	 * @return \Symfony\Component\HttpFoundation\RedirectResponse
+	 */
 	public function indexAction(Application $app) {
 		$listsRepository = new ListsRepository($app['db']);
 
@@ -64,6 +78,12 @@ class ListsController implements ControllerProviderInterface {
 		);
 	}
 
+	/**
+	 * @param Application $app
+	 * @param $id
+	 *
+	 * @return \Symfony\Component\HttpFoundation\RedirectResponse
+	 */
 	public function viewAction(Application $app, $id) {
 
 		$userId = $this->getUserId($app);
@@ -120,6 +140,11 @@ class ListsController implements ControllerProviderInterface {
 		);
 	}
 
+	/**
+	 * @param Application $app
+	 *
+	 * @return \Symfony\Component\HttpFoundation\RedirectResponse
+	 */
 	public function managerAction(Application $app) {
 
 		$userId = $this->getUserId($app);
@@ -139,6 +164,12 @@ class ListsController implements ControllerProviderInterface {
 		);
 	}
 
+	/**
+	 * @param Application $app
+	 * @param Request $request
+	 *
+	 * @return \Symfony\Component\HttpFoundation\RedirectResponse
+	 */
 	public function addAction(Application $app, Request $request) {
 		$userId = $this->getUserId($app);
 		$userRole = $this->getUserRole($app, $userId);
@@ -155,6 +186,19 @@ class ListsController implements ControllerProviderInterface {
 		$form->handleRequest($request);
 
 		if($form->isSubmitted() && $form->isValid()) {
+			$data = $form->getData();
+			$ifListExists = $listsRepository->findOneByName($data['name'], $userId);
+			if($ifListExists != null) {
+				$app['session']->getFlashBag()->add(
+					'messages',
+					[
+						'type' => 'danger',
+						'message' => 'message.lists_already_exists',
+					]
+				);
+				return $app->redirect($app['url_generator']->generate('list_add'), 301);
+			}
+
 			$listsRepository->save($form->getData(), $userId);
 
 			$app['session']->getFlashBag()->add(
@@ -178,6 +222,13 @@ class ListsController implements ControllerProviderInterface {
 		);
 	}
 
+	/**
+	 * @param Application $app
+	 * @param $id
+	 * @param Request $request
+	 *
+	 * @return \Symfony\Component\HttpFoundation\RedirectResponse
+	 */
 	public function editAction(Application $app, $id, Request $request) {
 		$userId = $this->getUserId($app);
 		$userRole = $this->getUserRole($app, $userId);
@@ -201,7 +252,21 @@ class ListsController implements ControllerProviderInterface {
 		$form = $app['form.factory']->createBuilder(ListType::class, $list)->getForm();
 		$form->handleRequest($request);
 		if($form->isSubmitted() && $form->isValid()){
+
+			$data = $form->getData();
+			$ifListExists = $listsRepository->findOneByName($data['name'], $userId);
+			if($ifListExists != null) {
+				$app['session']->getFlashBag()->add(
+					'messages',
+					[
+						'type' => 'danger',
+						'message' => 'message.lists_already_exists',
+					]
+				);
+				return $app->redirect($app['url_generator']->generate('list_edit', array('id' => $id)), 301);
+			}
 			$listsRepository->save($form->getData(), $userId);
+
 			$app['session']->getFlashBag()->add(
 				'messages',
 				[
@@ -223,6 +288,13 @@ class ListsController implements ControllerProviderInterface {
 	}
 
 
+	/**
+	 * @param Application $app
+	 * @param $id
+	 * @param Request $request
+	 *
+	 * @return \Symfony\Component\HttpFoundation\RedirectResponse
+	 */
 	public function deleteAction(Application $app, $id, Request $request) {
 		$userId = $this->getUserId($app);
 		$userRole = $this->getUserRole($app, $userId);
@@ -276,6 +348,13 @@ class ListsController implements ControllerProviderInterface {
 		);
 	}
 
+	/**
+	 * @param Application $app
+	 * @param $id
+	 * @param Request $request
+	 *
+	 * @return \Symfony\Component\HttpFoundation\RedirectResponse
+	 */
 	public function addElementAction(Application $app, $id, Request $request) {
 		$userId = $this->getUserId($app);
 		$userRole = $this->getUserRole($app, $userId);
@@ -332,6 +411,11 @@ class ListsController implements ControllerProviderInterface {
 		);
 	}
 
+	/**
+	 * @param Application $app
+	 *
+	 * @return mixed
+	 */
 	protected function getUserId(Application $app) {
 
 		$token = $app['security.token_storage']->getToken();
@@ -346,6 +430,12 @@ class ListsController implements ControllerProviderInterface {
 
 	}
 
+	/**
+	 * @param Application $app
+	 * @param $userId
+	 *
+	 * @return array
+	 */
 	protected function getUserRole(Application $app, $userId) {
 
 		$userRepository = new UserRepository($app['db']);

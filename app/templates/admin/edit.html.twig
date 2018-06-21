@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block main %}
-    <h3 class="modal-title text-monospace custom-m-b">{{ 'label.edit_list'|trans({'%name%': editedUser.login}) }}</h3>
+    <h3 class="modal-title text-monospace custom-m-b">{{ 'label.edit_user'|trans }} {{ editedUser.login }}</h3>
     <div class="form-group">
         {{ form_start(form, { method: 'post', action: url('user_edit', {'id': editedUser.id}) }) }}
         <div>
@@ -19,5 +19,9 @@
         <input type="submit" value="{{ 'action.change'|trans }}" class="btn btn-success custom-m-t" />
         {{ form_end(form) }}
     </div>
+
+    <br/><br/>
+
+    <a href="{{ url('admin_manager') }}">{{ 'label.return'|trans }}</a>
 
 {% endblock %}

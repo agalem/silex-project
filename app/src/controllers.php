@@ -16,6 +16,7 @@ $app->mount('/lists', new ListsController());
 $app->mount('/element', new \Controller\ElementsController());
 $app->mount('/auth', new AuthController());
 $app->mount('/admin', new AdminController());
+$app->mount('/user', new \Controller\UserController());
 
 
 $app->error(function (\Exception $e, Request $request, $code) use ($app) {
