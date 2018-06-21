@@ -6,14 +6,31 @@ namespace Repository;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
 
+/**
+ * Class ElementsRepository
+ * @package Repository
+ */
 class ElementsRepository {
 
+	/**
+	 * @var Connection
+	 */
 	protected $db;
 
+	/**
+	 * ElementsRepository constructor.
+	 *
+	 * @param Connection $db
+	 */
 	public function __construct( Connection $db ) {
 		$this->db = $db;
 	}
 
+	/**
+	 * @param $userId
+	 *
+	 * @return array
+	 */
 	public function findAll($userId) {
 		$queryBuilder = $this->queryAll();
 		$queryBuilder->where('u.createdBy = :userId')
@@ -22,7 +39,12 @@ class ElementsRepository {
 		return $queryBuilder->execute()->fetchAll();
 	}
 
-
+	/**
+	 * @param $id
+	 * @param $userId
+	 *
+	 * @return array|mixed
+	 */
 	public function findOneById( $id , $userId) {
 		$queryBuilder = $this->queryAll();
 		$queryBuilder->where( 'e.id = :id AND e.createdBy = :userId' )
@@ -33,6 +55,11 @@ class ElementsRepository {
 		return !$result ? [] : $result;
 	}
 
+	/**
+	 * @param $name
+	 *
+	 * @return array|mixed
+	 */
 	public function findOneByName($name) {
 		$queryBuilder = $this->queryAll();
 
@@ -43,6 +70,11 @@ class ElementsRepository {
 		return !$result ? [] : $result;
 	}
 
+	/**
+	 * @param $ids
+	 *
+	 * @return array
+	 */
 	public function findById($ids) {
 		$queryBuilder = $this->queryAll();
 		$queryBuilder->where('e.id IN (:ids)')
@@ -51,6 +83,13 @@ class ElementsRepository {
 		return $queryBuilder->execute()->fetchAll();
 	}
 
+	/**
+	 * @param $listId
+	 * @param $element
+	 * @param $userId
+	 *
+	 * @throws DBALException
+	 */
 	public function save($listId, $element, $userId)
 	{
 		$this->db->beginTransaction();
@@ -82,11 +121,19 @@ class ElementsRepository {
 
 	}
 
+	/**
+	 * @param $element
+	 */
 	public function delete($element) {
 		$this->removeLinkedElements($element['id']);
 		$this->db->delete('elements', ['id' => $element['id']]);
 	}
 
+	/**
+	 * @param $element
+	 *
+	 * @throws DBALException
+	 */
 	public function buy($element) {
 		$this->db->beginTransaction();
 
@@ -110,10 +157,20 @@ class ElementsRepository {
 		}
 	}
 
+	/**
+	 * @param $elementId
+	 *
+	 * @return int
+	 */
 	protected function removeLinkedElements($elementId) {
 		return $this->db->delete('elements_lists', ['element_id' => $elementId]);
 	}
 
+
+	/**
+	 * @param $listId
+	 * @param $elementsIds
+	 */
 	protected function addLinkedElements($listId, $elementsIds) {
 		if(!is_array($elementsIds)) {
 			$elementsIds = [$elementsIds];
@@ -129,6 +186,10 @@ class ElementsRepository {
 		}
 	}
 
+
+	/**
+	 * @return $this
+	 */
 	protected function queryAll() {
 		$queryBuilder = $this->db->createQueryBuilder();
 

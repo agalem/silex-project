@@ -5,15 +5,32 @@ namespace Repository;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
 
+/**
+ * Class ListsRepository
+ * @package Repository
+ */
 class ListsRepository {
 
+	/**
+	 * @var Connection
+	 */
 	protected $db;
 
+	/**
+	 * ListsRepository constructor.
+	 *
+	 * @param Connection $db
+	 */
 	public function __construct(Connection $db) {
 		$this->db = $db;
 		$this->elementsRepository = new ElementsRepository($db);
 	}
 
+	/**
+	 * @param $userId
+	 *
+	 * @return array
+	 */
 	public function findAll($userId) {
 		$queryBuilder = $this->queryAll();
 		$queryBuilder->where('l.createdBy = :userId')
@@ -22,6 +39,12 @@ class ListsRepository {
 		return $queryBuilder->execute()->fetchAll();
 	}
 
+	/**
+	 * @param $id
+	 * @param $userId
+	 *
+	 * @return mixed
+	 */
 	public function findOneById($id, $userId) {
 		$queryBuilder = $this->queryAll();
 		$queryBuilder->where('l.id = :id AND l.createdBy = :userId')
@@ -33,6 +56,12 @@ class ListsRepository {
 		return $result;
 	}
 
+	/**
+	 * @param $name
+	 * @param $userId
+	 *
+	 * @return mixed
+	 */
 	public function findOneByName($name, $userId) {
 		$queryBuilder = $this->queryAll();
 		$queryBuilder->where('l.name = :name AND l.createdBy = :userId')
@@ -44,6 +73,12 @@ class ListsRepository {
 		return $result;
 	}
 
+	/**
+	 * @param $list
+	 * @param $userId
+	 *
+	 * @throws DBALException
+	 */
 	public function save($list, $userId) {
 		$this->db->beginTransaction();
 
@@ -67,13 +102,18 @@ class ListsRepository {
 		}
 	}
 
-
+	/**
+	 * @param $listId
+	 */
 	public function updateModiefiedDate($listId) {
 		$currentDateTime = new \DateTime();
 		$list['modifiedAt'] = $currentDateTime->format('Y-m-d H:i:s');
 		$this->db->update('lists', $list, ['id' => $listId]);
 	}
 
+	/**
+	 * @param $list
+	 */
 	public function delete($list) {
 		$linkedElementsIds = $this->findLinkedElementsIds($list['id']);
 
@@ -81,6 +121,11 @@ class ListsRepository {
 		$this->removeLinkedElements($list['id']);
 	}
 
+	/**
+	 * @param $listId
+	 *
+	 * @return mixed
+	 */
 	public function getCurrentSpendings($listId) {
 
 		$elementsIds = $this->findLinkedElementsIds($listId);
@@ -95,6 +140,11 @@ class ListsRepository {
 		return $result['finalValue'];
 	}
 
+	/**
+	 * @param $listId
+	 *
+	 * @return array
+	 */
 	public function findLinkedElements($listId)
 	{
 		$elementsIds = $this->findLinkedElementsIds($listId);
@@ -104,6 +154,11 @@ class ListsRepository {
 			: [];
 	}
 
+	/**
+	 * @param $elementId
+	 *
+	 * @return mixed
+	 */
 	public function getConnectedList($elementId) {
 		$queryBuilder = $this->db->createQueryBuilder();
 
@@ -116,6 +171,11 @@ class ListsRepository {
 		return $result;
 	}
 
+	/**
+	 * @param $listId
+	 *
+	 * @return array
+	 */
 	protected function findLinkedElementsIds($listId) {
 		$queryBuilder = $this->db->createQueryBuilder()
 			->select('el.element_id')
@@ -127,6 +187,11 @@ class ListsRepository {
 		return isset($result) ? array_column($result, 'element_id') : [];
 	}
 
+	/**
+	 * @param $listId
+	 *
+	 * @throws DBALException
+	 */
 	protected function removeLinkedElements($listId) {
 
 		$this->db->beginTransaction();
@@ -150,6 +215,9 @@ class ListsRepository {
 		}
 	}
 
+	/**
+	 * @return $this
+	 */
 	protected function queryAll() {
 		$queryBuilder = $this->db->createQueryBuilder();
 

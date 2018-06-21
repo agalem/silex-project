@@ -19,6 +19,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 
+/**
+ * Class ElementsController
+ * @package Controller
+ */
 class ElementsController implements ControllerProviderInterface {
 
 	public function connect( Application $app ) {
@@ -42,6 +46,13 @@ class ElementsController implements ControllerProviderInterface {
 		return $controller;
 	}
 
+	/**
+	 * @param Application $app
+	 * @param $id
+	 * @param Request $request
+	 *
+	 * @return \Symfony\Component\HttpFoundation\RedirectResponse
+	 */
 	public function editAction(Application $app, $id, Request $request) {
 
 		$userId = $this->getUserId($app);
@@ -97,6 +108,13 @@ class ElementsController implements ControllerProviderInterface {
 		);
 	}
 
+	/**
+	 * @param Application $app
+	 * @param $id
+	 * @param Request $request
+	 *
+	 * @return \Symfony\Component\HttpFoundation\RedirectResponse
+	 */
 	public function buyAction(Application $app, $id, Request $request) {
 
 		$userId = $this->getUserId($app);
@@ -153,6 +171,13 @@ class ElementsController implements ControllerProviderInterface {
 	}
 
 
+	/**
+	 * @param Application $app
+	 * @param $id
+	 * @param Request $request
+	 *
+	 * @return \Symfony\Component\HttpFoundation\RedirectResponse
+	 */
 	public function deleteAction(Application $app, $id, Request $request) {
 
 		$userId = $this->getUserId($app);
@@ -207,6 +232,11 @@ class ElementsController implements ControllerProviderInterface {
 		);
 	}
 
+	/**
+	 * @param Application $app
+	 *
+	 * @return mixed
+	 */
 	protected function getUserId(Application $app) {
 
 		$token = $app['security.token_storage']->getToken();
@@ -221,6 +251,12 @@ class ElementsController implements ControllerProviderInterface {
 
 	}
 
+	/**
+	 * @param Application $app
+	 * @param $userId
+	 *
+	 * @return array
+	 */
 	protected function getUserRole(Application $app, $userId) {
 
 		$userRepository = new UserRepository($app['db']);

@@ -17,9 +17,17 @@ use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Repository\UserRepository;
 
-
+/**
+ * Class AdminController
+ * @package Controller
+ */
 class AdminController implements  ControllerProviderInterface {
 
+	/**
+	 * @param Application $app
+	 *
+	 * @return mixed
+	 */
 	public function connect( Application $app ) {
 		$controller = $app['controllers_factory'];
 
@@ -43,6 +51,11 @@ class AdminController implements  ControllerProviderInterface {
 		return $controller;
 	}
 
+	/**
+	 * @param Application $app
+	 *
+	 * @return mixed
+	 */
 	public function managerAction(Application $app) {
 
 		$userRepository =  new UserRepository($app['db']);
@@ -55,6 +68,13 @@ class AdminController implements  ControllerProviderInterface {
 
 	}
 
+	/**
+	 * @param Application $app
+	 * @param $id
+	 * @param Request $request
+	 *
+	 * @return \Symfony\Component\HttpFoundation\RedirectResponse
+	 */
 	public function editAction(Application $app, $id, Request $request) {
 
 		$userRepository = new UserRepository($app['db']);
@@ -100,6 +120,13 @@ class AdminController implements  ControllerProviderInterface {
 	}
 
 
+	/**
+	 * @param Application $app
+	 * @param $id
+	 * @param Request $request
+	 *
+	 * @return \Symfony\Component\HttpFoundation\RedirectResponse
+	 */
 	public function deleteAction(Application $app, $id, Request $request){
 
 		$userRepository = new UserRepository($app['db']);
@@ -148,6 +175,12 @@ class AdminController implements  ControllerProviderInterface {
 
 	}
 
+	/**
+	 * @param Application $app
+	 * @param Request $request
+	 *
+	 * @return \Symfony\Component\HttpFoundation\RedirectResponse
+	 */
 	public function addAction(Application $app, Request $request) {
 
 		$userRepository = new UserRepository($app['db']);

@@ -1,9 +1,6 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: agalempaszek
- * Date: 20.05.2018
- * Time: 13:03
+ * Element form.
  */
 
 namespace Form;
@@ -14,8 +11,16 @@ use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 
+/**
+ * Class ElementType
+ * @package Form
+ */
 class ElementType extends AbstractType {
 
+	/**
+	 * @param FormBuilderInterface $builder
+	 * @param array $options
+	 */
 	public function buildForm(FormBuilderInterface $builder, array $options) {
 		$builder->add(
 			'name',
@@ -72,6 +77,9 @@ class ElementType extends AbstractType {
 		);
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getBlockPrefix() {
 		return 'element_type';
 	}

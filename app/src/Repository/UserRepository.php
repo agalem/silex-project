@@ -15,14 +15,28 @@ use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 class UserRepository
 {
 
+	/**
+	 * @var Connection
+	 */
 	protected $db;
 
+
+	/**
+	 * UserRepository constructor.
+	 *
+	 * @param Connection $db
+	 */
 	public function __construct(Connection $db)
 	{
 		$this->db = $db;
 	}
 
 
+	/**
+	 * @param $login
+	 *
+	 * @return array
+	 */
 	public function loadUserByLogin($login)
 	{
 		try {
@@ -57,6 +71,11 @@ class UserRepository
 	}
 
 
+	/**
+	 * @param $login
+	 *
+	 * @return array|mixed
+	 */
 	public function getUserByLogin($login)
 	{
 		try {
@@ -71,6 +90,11 @@ class UserRepository
 	}
 
 
+	/**
+	 * @param $userId
+	 *
+	 * @return array
+	 */
 	public function getUserRoles($userId)
 	{
 		$roles = [];
@@ -95,12 +119,16 @@ class UserRepository
 	}
 
 
+	/**
+	 * @param $user
+	 *
+	 * @return array
+	 */
 	public function save($user) {
 
 		try {
-				$this->db->insert('users', $user);
 
-				$this->loadUserByLogin($user['login']);
+			$this->db->insert('users', $user);
 
 		} catch (DBALException $exception) {
 			return [];
@@ -110,6 +138,11 @@ class UserRepository
 	}
 
 
+	/**
+	 * @param $username
+	 *
+	 * @return array|mixed
+	 */
 	public function getUserId($username) {
 
 		try {
@@ -125,6 +158,9 @@ class UserRepository
 
 	}
 
+	/**
+	 * @return array
+	 */
 	public function findAllUsers() {
 
 		try {
@@ -140,6 +176,11 @@ class UserRepository
 
 	}
 
+	/**
+	 * @param $id
+	 *
+	 * @return array|mixed
+	 */
 	public function findUserById($id) {
 
 		try {
@@ -153,6 +194,12 @@ class UserRepository
 
 	}
 
+	/**
+	 * @param $id
+	 * @param $password
+	 *
+	 * @return array
+	 */
 	public function changePassword($id, $password) {
 
 		try {
@@ -172,6 +219,12 @@ class UserRepository
 
 	}
 
+
+	/**
+	 * @param $id
+	 *
+	 * @return array
+	 */
 	public function deleteUser($id) {
 
 		$this->db->beginTransaction();
@@ -191,6 +244,12 @@ class UserRepository
 
 	}
 
+	/**
+	 * @param $id
+	 * @param $userData
+	 *
+	 * @return array
+	 */
 	public function updateUserData($id, $userData) {
 
 		try {
@@ -209,6 +268,10 @@ class UserRepository
 
 	}
 
+
+	/**
+	 * @return array|\Doctrine\DBAL\Query\QueryBuilder
+	 */
 	private function queryAll() {
 
 		try {

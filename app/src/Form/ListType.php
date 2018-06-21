@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * List form.
+ */
+
 namespace Form;
 
 use PHP_CodeSniffer\Generators\Text;
@@ -8,8 +12,16 @@ use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 
+/**
+ * Class ListType
+ * @package Form
+ */
 class ListType extends AbstractType {
 
+	/**
+	 * @param FormBuilderInterface $builder
+	 * @param array $options
+	 */
 	public function buildForm(FormBuilderInterface $builder, array $options) {
 		$builder->add(
 			'name',
@@ -35,7 +47,9 @@ class ListType extends AbstractType {
 	}
 
 
-
+	/**
+	 * @return string
+	 */
 	public function getBlockPrefix() {
 		return 'list_type';
 	}

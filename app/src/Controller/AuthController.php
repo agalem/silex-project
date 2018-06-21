@@ -19,6 +19,11 @@ use Symfony\Component\Security\Core\User\User;
 class AuthController implements ControllerProviderInterface
 {
 
+	/**
+	 * @param Application $app
+	 *
+	 * @return mixed
+	 */
 	public function connect(Application $app)
 	{
 		$controller = $app['controllers_factory'];
@@ -37,6 +42,12 @@ class AuthController implements ControllerProviderInterface
 		return $controller;
 	}
 
+	/**
+	 * @param Application $app
+	 * @param Request $request
+	 *
+	 * @return mixed
+	 */
 	public function loginAction(Application $app, Request $request)
 	{
 		$user = ['login' => $app['session']->get('_security.last_username')];
@@ -52,7 +63,11 @@ class AuthController implements ControllerProviderInterface
 		);
 	}
 
-
+	/**
+	 * @param Application $app
+	 *
+	 * @return mixed
+	 */
 	public function logoutAction(Application $app)
 	{
 		$app['session']->clear();
@@ -61,21 +76,25 @@ class AuthController implements ControllerProviderInterface
 	}
 
 
+	/**
+	 * @param Application $app
+	 * @param Request $request
+	 *
+	 * @return \Symfony\Component\HttpFoundation\RedirectResponse
+	 */
 	public  function createAction(Application $app, Request $request) {
-		$user = [];
 
+		$user = [];
 
 		$form=$app['form.factory']->createBuilder(AccountType::class, $user)->getForm();
 		$form->handleRequest($request);
 
 
-
 		if($form->isSubmitted() && $form->isValid()) {
 			$usersRepository = new UserRepository($app['db']);
 
-
-			$newUser = $form->getData();
-			$ifExists = $usersRepository->getUserByLogin($newUser['login']);
+			$user = $form->getData();
+			$ifExists = $usersRepository->getUserByLogin($user['login']);
 
 			if($ifExists != null) {
 				$app['session']->getFlashBag()->add(
@@ -88,8 +107,8 @@ class AuthController implements ControllerProviderInterface
 				return $app->redirect($app['url_generator']->generate('auth_create'), 301);
 			}
 
-			$newUser['password'] = $app['security.encoder.bcrypt']->encodePassword($newUser['password'], '');
-			$usersRepository->save($newUser);
+			$user['password'] = $app['security.encoder.bcrypt']->encodePassword($user['password'], '');
+			$usersRepository->save($user);
 
 			$app['session']->getFlashBag()->add(
 				'messages',
@@ -99,7 +118,6 @@ class AuthController implements ControllerProviderInterface
 				]
 			);
 
-			dump($newUser);
 
 			return $app->redirect($app['url_generator']->generate('auth_login'), 301);
 		}

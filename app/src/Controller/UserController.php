@@ -13,6 +13,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Repository\UserRepository;
 use Symfony\Component\Security\Core\User\User;
 
+/**
+ * Class UserController
+ * @package Controller
+ */
 class UserController implements ControllerProviderInterface {
 
 	public function connect( Application $app ) {
@@ -29,6 +33,12 @@ class UserController implements ControllerProviderInterface {
 		return $controller;
 	}
 
+	/**
+	 * @param Application $app
+	 * @param Request $request
+	 *
+	 * @return \Symfony\Component\HttpFoundation\RedirectResponse
+	 */
 	public function editAction(Application $app, Request $request) {
 
 		$userRepository = new UserRepository($app['db']);
@@ -88,6 +98,12 @@ class UserController implements ControllerProviderInterface {
 
 	}
 
+	/**
+	 * @param Application $app
+	 * @param Request $request
+	 *
+	 * @return \Symfony\Component\HttpFoundation\RedirectResponse
+	 */
 	public function deleteAction(Application $app, Request $request) {
 
 		$userRepository = new UserRepository($app['db']);
@@ -131,7 +147,11 @@ class UserController implements ControllerProviderInterface {
 	}
 
 
-
+	/**
+	 * @param Application $app
+	 *
+	 * @return mixed
+	 */
 	private function getUsername(Application $app) {
 
 		$token = $app['security.token_storage']->getToken();
@@ -143,6 +163,12 @@ class UserController implements ControllerProviderInterface {
 		return $user;
 	}
 
+	/**
+	 * @param Application $app
+	 * @param $username
+	 *
+	 * @return mixed
+	 */
 	private function getUserId(Application $app, $username) {
 
 		$userRepository = new UserRepository($app['db']);
