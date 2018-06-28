@@ -146,6 +146,132 @@
                 <source>text.list_is_empty</source>
                 <target>Lista nie ma jeszcze produktów</target>
             </trans-unit>
+
+
+            <trans-unit id="title.your_lists">
+                <source>title.your_lists</source>
+                <target>Twoje listy</target>
+            </trans-unit>
+            <trans-unit id="auth.logout.label">
+                <source>auth.logout.label</source>
+                <target>Wyloguj się</target>
+            </trans-unit>
+            <trans-unit id="label.user_account">
+                <source>label.user_account</source>
+                <target>Twoje konto</target>
+            </trans-unit>
+            <trans-unit id="title.manage_account">
+                <source>title.manage_account</source>
+                <target>Zarządzaj kontem</target>
+            </trans-unit>
+            <trans-unit id="action.change">
+                <source>action.change</source>
+                <target>Zmień</target>
+            </trans-unit>
+            <trans-unit id="label.delete_account">
+                <source>label.delete_account</source>
+                <target>Usuń konto</target>
+            </trans-unit>
+            <trans-unit id="label.delete_self">
+                <source>label.delete_self</source>
+                <target>Usuń swoje konto</target>
+            </trans-unit>
+            <trans-unit id="label.isItem">
+                <source>label.isItem</source>
+                <target>Szt. czy kg?</target>
+            </trans-unit>
+            <trans-unit id="label.item">
+                <source>label.item</source>
+                <target>szt</target>
+            </trans-unit>
+            <trans-unit id="label.weight">
+                <source>label.weight</source>
+                <target>kg</target>
+            </trans-unit>
+            <trans-unit id="labe.add_admin">
+                <source>labe.add_admin</source>
+                <target>Utwórz administratora</target>
+            </trans-unit>
+            <trans-unit id="title.manage_users">
+                <source>title.manage_users</source>
+                <target>Zarządzaj użytkownikami</target>
+            </trans-unit>
+            <trans-unit id="label.return">
+                <source>label.return</source>
+                <target>Powrót</target>
+            </trans-unit>
+            <trans-unit id="label.edit_user">
+                <source>label.edit_user</source>
+                <target>Edytuj użytkownika</target>
+            </trans-unit>
+            <trans-unit id="label.delete_user">
+                <source>label.delete_user</source>
+                <target>Usuń użytkownika</target>
+            </trans-unit>
+            <trans-unit id="message.password_changed">
+                <source>message.password_changed</source>
+                <target>Zmieniono hasło</target>
+            </trans-unit>
+            <trans-unit id="message.user_successfully_deleted">
+                <source>message.user_successfully_deleted</source>
+                <target>Użytkownik usunięty</target>
+            </trans-unit>
+            <trans-unit id="message.username_exists">
+                <source>message.username_exists</source>
+                <target>Nazwa użytkownika już istnieje</target>
+            </trans-unit>
+            <trans-unit id="message.admin_created">
+                <source>message.admin_created</source>
+                <target>Utworzono administratora</target>
+            </trans-unit>
+            <trans-unit id="message.user_created">
+                <source>message.user_created</source>
+                <target>Utworzono użytkownika</target>
+            </trans-unit>
+            <trans-unit id="message.lists_already_exists">
+                <source>message.lists_already_exists</source>
+                <target>Lista o takiej nazwie już istnieje</target>
+            </trans-unit>
+            <trans-unit id="message.user_updated">
+                <source>message.user_updated</source>
+                <target>Zmieniono dane użytkownika</target>
+            </trans-unit>
+            <trans-unit id="title.admin_panel">
+                <source>title.admin_panel</source>
+                <target>Panel admina</target>
+            </trans-unit>
+            <trans-unit id="auth.create.label">
+                <source>auth.create.label</source>
+                <target>Utwórz konto</target>
+            </trans-unit>
+            <trans-unit id="auth.login.label">
+                <source>auth.login.label</source>
+                <target>Zaloguj się</target>
+            </trans-unit>
+            <trans-unit id="title.auth_login">
+                <source>title.auth_login</source>
+                <target>Zaloguj się</target>
+            </trans-unit>
+            <trans-unit id="label.login">
+                <source>label.login</source>
+                <target>Login</target>
+            </trans-unit>
+            <trans-unit id="label.password">
+                <source>label.password</source>
+                <target>Hasło</target>
+            </trans-unit>
+            <trans-unit id="action.login">
+                <source>action.login</source>
+                <target>Zaloguj się</target>
+            </trans-unit>
+            <trans-unit id="title.auth_create">
+                <source>title.auth_create</source>
+                <target>Utwórz konto</target>
+            </trans-unit>
+            <trans-unit id="action.create">
+                <source>action.create</source>
+                <target>Utwórz konto</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

@@ -5,6 +5,8 @@
 {% endblock %}
 
 {% block main %}
+    {% form_theme form with ['bootstrap_4_horizontal_layout.html.twig', 'form/form_errors.html.twig'] %}
+
     <h5 class="modal-title text-monospace custom-m-b">{{ 'label.delete_user'|trans }} {{ deletedUser.login }}</h5>
     <div class="form-group">
         {{ form_start(form, { method: 'post', action: url('user_delete', {'id': deletedUser.id}) }) }}

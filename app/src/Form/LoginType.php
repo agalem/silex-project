@@ -16,60 +16,60 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class LoginType extends AbstractType
 {
-	/**
-	 * {@inheritdoc}
-	 */
-	public function buildForm(FormBuilderInterface $builder, array $options)
-	{
-		$builder->add(
-			'login',
-			TextType::class,
-			[
-				'label' => 'label.login',
-				'required' => true,
-				'attr' => [
-					'max_length' => 32,
+    /**
+     * {@inheritdoc}
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder->add(
+            'login',
+            TextType::class,
+            [
+                'label' => 'label.login',
+                'required' => true,
+                'attr' => [
+                    'max_length' => 32,
 
-				],
-				'constraints' => [
-					new Assert\NotBlank(),
-					new Assert\Length(
-						[
-							'min' => 8,
-							'max' => 32,
-						]
-					),
-				],
-			]
-		);
-		$builder->add(
-			'password',
-			PasswordType::class,
-			[
-				'label' => 'label.password',
-				'required' => true,
-				'attr' => [
-					'max_length' => 32,
+                ],
+                'constraints' => [
+                    new Assert\NotBlank(),
+                    new Assert\Length(
+                        [
+                            'min' => 8,
+                            'max' => 32,
+                        ]
+                    ),
+                ],
+            ]
+        );
+        $builder->add(
+            'password',
+            PasswordType::class,
+            [
+                'label' => 'label.password',
+                'required' => true,
+                'attr' => [
+                    'max_length' => 32,
 
-				],
-				'constraints' => [
-					new Assert\NotBlank(),
-					new Assert\Length(
-						[
-							'min' => 8,
-							'max' => 32,
-						]
-					),
-				],
-			]
-		);
-	}
+                ],
+                'constraints' => [
+                    new Assert\NotBlank(),
+                    new Assert\Length(
+                        [
+                            'min' => 8,
+                            'max' => 32,
+                        ]
+                    ),
+                ],
+            ]
+        );
+    }
 
-	/**
-	 * {@inheritdoc}
-	 */
-	public function getBlockPrefix()
-	{
-		return 'login_type';
-	}
+    /**
+     * {@inheritdoc}
+     */
+    public function getBlockPrefix()
+    {
+        return 'login_type';
+    }
 }

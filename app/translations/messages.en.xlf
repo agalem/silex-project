@@ -146,6 +146,133 @@
                 <source>text.list_is_empty</source>
                 <target>There is no products in the list</target>
             </trans-unit>
+
+
+
+            <trans-unit id="title.your_lists">
+                <source>title.your_lists</source>
+                <target>Your lists</target>
+            </trans-unit>
+            <trans-unit id="auth.logout.label">
+                <source>auth.logout.label</source>
+                <target>Logout</target>
+            </trans-unit>
+            <trans-unit id="label.user_account">
+                <source>label.user_account</source>
+                <target>Your account</target>
+            </trans-unit>
+            <trans-unit id="title.manage_account">
+                <source>title.manage_account</source>
+                <target>Manage account</target>
+            </trans-unit>
+            <trans-unit id="action.change">
+                <source>action.change</source>
+                <target>Change</target>
+            </trans-unit>
+            <trans-unit id="label.delete_account">
+                <source>label.delete_account</source>
+                <target>Delete account</target>
+            </trans-unit>
+            <trans-unit id="label.delete_self">
+                <source>label.delete_self</source>
+                <target>Delete your account</target>
+            </trans-unit>
+            <trans-unit id="label.isItem">
+                <source>label.isItem</source>
+                <target>Item or weight</target>
+            </trans-unit>
+            <trans-unit id="label.item">
+                <source>label.item</source>
+                <target>items</target>
+            </trans-unit>
+            <trans-unit id="label.weight">
+                <source>label.weight</source>
+                <target>kg</target>
+            </trans-unit>
+            <trans-unit id="labe.add_admin">
+                <source>labe.add_admin</source>
+                <target>Create admin</target>
+            </trans-unit>
+            <trans-unit id="title.manage_users">
+                <source>title.manage_users</source>
+                <target>Manage users</target>
+            </trans-unit>
+            <trans-unit id="label.return">
+                <source>label.return</source>
+                <target>Return</target>
+            </trans-unit>
+            <trans-unit id="label.edit_user">
+                <source>label.edit_user</source>
+                <target>Edit user</target>
+            </trans-unit>
+            <trans-unit id="label.delete_user">
+                <source>label.delete_user</source>
+                <target>Delete user</target>
+            </trans-unit>
+            <trans-unit id="message.password_changed">
+                <source>message.password_changed</source>
+                <target>Password changed</target>
+            </trans-unit>
+            <trans-unit id="message.user_successfully_deleted">
+                <source>message.user_successfully_deleted</source>
+                <target>User successfully deleted</target>
+            </trans-unit>
+            <trans-unit id="message.username_exists">
+                <source>message.username_exists</source>
+                <target>Username already exists</target>
+            </trans-unit>
+            <trans-unit id="message.admin_created">
+                <source>message.admin_created</source>
+                <target>Admin has been created</target>
+            </trans-unit>
+            <trans-unit id="message.user_created">
+                <source>message.user_created</source>
+                <target>User has been created</target>
+            </trans-unit>
+            <trans-unit id="message.lists_already_exists">
+                <source>message.lists_already_exists</source>
+                <target>List already exists</target>
+            </trans-unit>
+            <trans-unit id="message.user_updated">
+                <source>message.user_updated</source>
+                <target>Users data has been updated</target>
+            </trans-unit>
+            <trans-unit id="title.admin_panel">
+                <source>title.admin_panel</source>
+                <target>Admin panel</target>
+            </trans-unit>
+            <trans-unit id="auth.create.label">
+                <source>auth.create.label</source>
+                <target>Create</target>
+            </trans-unit>
+            <trans-unit id="auth.login.label">
+                <source>auth.login.label</source>
+                <target>Login</target>
+            </trans-unit>
+            <trans-unit id="title.auth_login">
+                <source>title.auth_login</source>
+                <target>Login</target>
+            </trans-unit>
+            <trans-unit id="label.login">
+                <source>label.login</source>
+                <target>Login</target>
+            </trans-unit>
+            <trans-unit id="label.password">
+                <source>label.password</source>
+                <target>Password</target>
+            </trans-unit>
+            <trans-unit id="action.login">
+                <source>action.login</source>
+                <target>Login</target>
+            </trans-unit>
+            <trans-unit id="title.auth_create">
+                <source>title.auth_create</source>
+                <target>Create</target>
+            </trans-unit>
+            <trans-unit id="action.create">
+                <source>action.create</source>
+                <target>Create</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

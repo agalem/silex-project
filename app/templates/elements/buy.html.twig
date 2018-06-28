@@ -22,6 +22,8 @@
 {% endblock %}
 
 {% block main %}
+    {% form_theme form with ['bootstrap_4_horizontal_layout.html.twig', 'form/form_errors.html.twig'] %}
+
     <h3 class="modal-title text-monospace custom-m-b">{{ 'label.buy_element'|trans({'%name%': editedElement.name}) }}</h3>
     <div class="form-group">
         {{ form_start(form, { method: 'post', action: url('element_buy', {'id' : editedElement.id }) }) }}
@@ -38,6 +40,13 @@
             <div class="form-input">
                 {{ form_widget(form.isBought) }}
                 {{ form_errors(form.isBought) }}
+            </div>
+        </div>
+        <div class="custom-hide">
+            {{ form_label(form.isItem, 'label.isItem'|trans) }}<br/>
+            <div class="form-input">
+                {{ form_widget(form.isItem) }}
+                {{ form_errors(form.isItem) }}
             </div>
         </div>
         <br/>

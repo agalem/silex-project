@@ -15,279 +15,279 @@ use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 class UserRepository
 {
 
-	/**
-	 * @var Connection
-	 */
-	protected $db;
+    /**
+     * @var Connection
+     */
+    protected $db;
 
 
-	/**
-	 * UserRepository constructor.
-	 *
-	 * @param Connection $db
-	 */
-	public function __construct(Connection $db)
-	{
-		$this->db = $db;
-	}
+    /**
+     * UserRepository constructor.
+     *
+     * @param Connection $db
+     */
+    public function __construct(Connection $db)
+    {
+        $this->db = $db;
+    }
 
+
+    /**
+     * @param $login
+     *
+     * @return array
+     */
+    public function loadUserByLogin($login)
+    {
+        try {
+            $user = $this->getUserByLogin($login);
+
+            if (!$user || !count($user)) {
+                throw new UsernameNotFoundException(
+                    sprintf('Username "%s" does not exist.', $login)
+                );
+            }
+
+            $roles = $this->getUserRoles($user['id']);
+
+            if (!$roles || !count($roles)) {
+                throw new UsernameNotFoundException(
+                    sprintf('Username "%s" does not exist.', $login)
+                );
+            }
+
+            return [
+                'login' => $user['login'],
+                'password' => $user['password'],
+                'roles' => $roles,
+            ];
+        } catch (DBALException $exception) {
+            throw new UsernameNotFoundException(
+                sprintf('Username "%s" does not exist.', $login)
+            );
+        } catch (UsernameNotFoundException $exception) {
+            throw $exception;
+        }
+    }
+
+
+    /**
+     * @param $login
+     *
+     * @return array|mixed
+     */
+    public function getUserByLogin($login)
+    {
+        try {
+            $queryBuilder = $this->queryAll();
+            $queryBuilder->where('u.login = :login')
+                         ->setParameter(':login', $login, \PDO::PARAM_STR);
+
+            return $queryBuilder->execute()->fetch();
+        } catch (DBALException $exception) {
+            return [];
+        }
+    }
+
+
+    /**
+     * @param $userId
+     *
+     * @return array
+     */
+    public function getUserRoles($userId)
+    {
+        $roles = [];
+
+        try {
+            $queryBuilder = $this->db->createQueryBuilder();
+            $queryBuilder->select('r.name')
+                         ->from('users', 'u')
+                         ->innerJoin('u', 'user_roles', 'r', 'u.role_id = r.id')
+                         ->where('u.id = :id')
+                         ->setParameter(':id', $userId, \PDO::PARAM_INT);
+            $result = $queryBuilder->execute()->fetchAll();
+
+            if ($result) {
+                $roles = array_column($result, 'name');
+            }
+
+            return $roles;
+        } catch (DBALException $exception) {
+            return $roles;
+        }
+    }
+
+
+    /**
+     * @param $user
+     *
+     * @return array
+     */
+    public function save($user)
+    {
+
+        try {
+            $this->db->insert('users', $user);
+        } catch (DBALException $exception) {
+            return [];
+        }
+    }
+
+
+    /**
+     * @param $username
+     *
+     * @return array|mixed
+     */
+    public function getUserId($username)
+    {
+
+        try {
+            $queryBuilder = $this->db->createQueryBuilder();
+            $queryBuilder->select('u.id')
+                         ->from('users', 'u')
+                         ->where('u.login = :login')
+                         ->setParameter(':login', $username, \PDO::PARAM_STR);
+
+            return $queryBuilder->execute()->fetch();
+        } catch (DBALException $exception) {
+            return [];
+        }
+    }
+
+    /**
+     * @return array
+     */
+    public function findAllUsers()
+    {
+
+        try {
+            $users = $this->queryAll();
+
+            return $users->execute()->fetchAll();
+        } catch (DBALException $exception) {
+            return [];
+        }
+    }
+
+    /**
+     * @param $id
+     *
+     * @return array|mixed
+     */
+    public function findUserById($id)
+    {
+
+        try {
+            $queryBuilder = $this->queryAll();
+            $queryBuilder->where('u.id = :id')
+                         ->setParameter(':id', $id, \PDO::PARAM_INT);
+
+            return $queryBuilder->execute()->fetch();
+        } catch (DBALException $exception) {
+            return [];
+        }
+    }
+
+    /**
+     * @param $id
+     * @param $password
+     *
+     * @return array
+     */
+    public function changePassword($id, $password)
+    {
+
+        try {
+            $user = $this->findUserById($id);
+
+            if (!$user) {
+                return [];
+            }
+
+            $this->db->update('users', $password, ['id' => $id]);
+        } catch (DBALException $exception) {
+            return [];
+        }
+    }
+
+
+    /**
+     * @param $id
+     *
+     * @return array
+     */
+    public function deleteUser($id)
+    {
+
+        $this->db->beginTransaction();
+
+        try {
+            $this->db->delete('elements', ['createdBy' => $id]);
+            $this->db->delete('lists', ['createdBy' => $id]);
+            $this->db->delete('users', ['id' => $id]);
+
+            $this->db->commit();
+        } catch (DBALException $exception) {
+            $this->db->rollBack();
+
+            throw $exception;
+        }
+    }
+
+    /**
+     * @param $id
+     * @param $userData
+     *
+     * @return array
+     */
+    public function updateUserData($id, $userData)
+    {
+
+        try {
+            $user = $this->findUserById($id);
+
+            if (!$user) {
+                return [];
+            }
+
+            $this->db->update('users', $userData, ['id' => $id]);
+        } catch (DBALException $exception) {
+            return [];
+        }
+    }
 
 	/**
 	 * @param $login
 	 *
 	 * @return array
 	 */
-	public function loadUserByLogin($login)
+	public function findForUniqueness($login)
 	{
-		try {
-			$user = $this->getUserByLogin($login);
+		$queryBuilder = $this->queryAll();
+		$queryBuilder->where('u.login = :login')
+		             ->setParameter(':login', $login, \PDO::PARAM_STR);
 
-			if (!$user || !count($user)) {
-				throw new UsernameNotFoundException(
-					sprintf('Username "%s" does not exist.', $login)
-				);
-			}
-
-			$roles = $this->getUserRoles($user['id']);
-
-			if (!$roles || !count($roles)) {
-				throw new UsernameNotFoundException(
-					sprintf('Username "%s" does not exist.', $login)
-				);
-			}
-
-			return [
-				'login' => $user['login'],
-				'password' => $user['password'],
-				'roles' => $roles,
-			];
-		} catch (DBALException $exception) {
-			throw new UsernameNotFoundException(
-				sprintf('Username "%s" does not exist.', $login)
-			);
-		} catch (UsernameNotFoundException $exception) {
-			throw $exception;
-		}
+		return $queryBuilder->execute()->fetchAll();
 	}
 
+    /**
+     * @return array|\Doctrine\DBAL\Query\QueryBuilder
+     */
+    private function queryAll()
+    {
 
-	/**
-	 * @param $login
-	 *
-	 * @return array|mixed
-	 */
-	public function getUserByLogin($login)
-	{
-		try {
-			$queryBuilder = $this->queryAll();
-			$queryBuilder->where('u.login = :login')
-			             ->setParameter(':login', $login, \PDO::PARAM_STR);
+        try {
+            $queryBuilder = $this->db->createQueryBuilder();
+            $queryBuilder->select('u.id', 'u.login', 'u.password', 'u.role_id')
+                         ->from('users', 'u');
 
-			return $queryBuilder->execute()->fetch();
-		} catch (DBALException $exception) {
-			return [];
-		}
-	}
+            return $queryBuilder;
+        } catch (DBALException $exception) {
+            return [];
+        }
+    }
 
-
-	/**
-	 * @param $userId
-	 *
-	 * @return array
-	 */
-	public function getUserRoles($userId)
-	{
-		$roles = [];
-
-		try {
-			$queryBuilder = $this->db->createQueryBuilder();
-			$queryBuilder->select('r.name')
-			             ->from('users', 'u')
-			             ->innerJoin('u', 'user_roles', 'r', 'u.role_id = r.id')
-			             ->where('u.id = :id')
-			             ->setParameter(':id', $userId, \PDO::PARAM_INT);
-			$result = $queryBuilder->execute()->fetchAll();
-
-			if ($result) {
-				$roles = array_column($result, 'name');
-			}
-
-			return $roles;
-		} catch (DBALException $exception) {
-			return $roles;
-		}
-	}
-
-
-	/**
-	 * @param $user
-	 *
-	 * @return array
-	 */
-	public function save($user) {
-
-		try {
-
-			$this->db->insert('users', $user);
-
-		} catch (DBALException $exception) {
-			return [];
-		}
-
-
-	}
-
-
-	/**
-	 * @param $username
-	 *
-	 * @return array|mixed
-	 */
-	public function getUserId($username) {
-
-		try {
-			$queryBuilder = $this->db->createQueryBuilder();
-			$queryBuilder->select('u.id')
-			             ->from('users', 'u')
-			             ->where('u.login = :login')
-			             ->setParameter(':login', $username, \PDO::PARAM_STR);
-			return $queryBuilder->execute()->fetch();
-		} catch (DBALException $exception) {
-			return [];
-		}
-
-	}
-
-	/**
-	 * @return array
-	 */
-	public function findAllUsers() {
-
-		try {
-			$users = $this->queryAll();
-
-			return $users->execute()->fetchAll();
-
-		} catch (DBALException $exception) {
-
-			return [];
-
-		}
-
-	}
-
-	/**
-	 * @param $id
-	 *
-	 * @return array|mixed
-	 */
-	public function findUserById($id) {
-
-		try {
-			$queryBuilder = $this->queryAll();
-			$queryBuilder->where('u.id = :id')
-			             ->setParameter(':id', $id, \PDO::PARAM_INT);
-			return $queryBuilder->execute()->fetch();
-		} catch (DBALException $exception) {
-			return [];
-		}
-
-	}
-
-	/**
-	 * @param $id
-	 * @param $password
-	 *
-	 * @return array
-	 */
-	public function changePassword($id, $password) {
-
-		try {
-			$user = $this->findUserById($id);
-
-			if(!$user) {
-				return [];
-			}
-
-			$this->db->update('users', $password, ['id' => $id]);
-
-		} catch (DBALException $exception) {
-
-			return [];
-
-		}
-
-	}
-
-
-	/**
-	 * @param $id
-	 *
-	 * @return array
-	 */
-	public function deleteUser($id) {
-
-		$this->db->beginTransaction();
-
-		try {
-
-			$this->db->delete('elements', ['createdBy' => $id]);
-			$this->db->delete('lists', ['createdBy' => $id]);
-			$this->db->delete('users', ['id' => $id]);
-
-			$this->db->commit();
-		} catch (DBALException $exception) {
-			$this->db->rollBack();
-
-			return [];
-		}
-
-	}
-
-	/**
-	 * @param $id
-	 * @param $userData
-	 *
-	 * @return array
-	 */
-	public function updateUserData($id, $userData) {
-
-		try {
-
-			$user = $this->findUserById($id);
-
-			if(!$user) {
-				return [];
-			}
-
-			$this->db->update('users', $userData, ['id' => $id]);
-
-		} catch (DBALException $exception) {
-			return [];
-		}
-
-	}
-
-
-	/**
-	 * @return array|\Doctrine\DBAL\Query\QueryBuilder
-	 */
-	private function queryAll() {
-
-		try {
-
-			$queryBuilder = $this->db->createQueryBuilder();
-			$queryBuilder->select('u.id', 'u.login', 'u.password', 'u.role_id')
-			             ->from('users', 'u');
-
-			return $queryBuilder;
-
-		} catch (DBALException $exception) {
-
-			return [];
-
-		}
-
-	}
 
 }

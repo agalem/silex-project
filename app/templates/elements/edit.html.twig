@@ -32,6 +32,8 @@
 {% endblock %}
 
 {% block main %}
+    {% form_theme form with ['bootstrap_4_horizontal_layout.html.twig', 'form/form_errors.html.twig'] %}
+
     <h3 class="modal-title text-monospace custom-m-b">{{ 'label.edit_element'|trans({'%name%': editedElement.name}) }}</h3>
     <div class="form-group">
         {{ form_start(form, { method: 'post', action: url('element_edit', {'id' : editedElement.id}) }) }}
@@ -64,6 +66,13 @@
             <div class="form-input">
                 {{ form_widget(form.quantity) }}
                 {{ form_errors(form.quantity) }}
+            </div>
+        </div>
+        <div>
+            {{ form_label(form.isItem, 'label.isItem'|trans) }}<br/>
+            <div class="form-input">
+                {{ form_widget(form.isItem) }}
+                {{ form_errors(form.isItem) }}
             </div>
         </div>
         <input type="submit" value="{{ 'action.save'|trans }}" class="btn btn-success custom-m-t" />

@@ -3,8 +3,8 @@
 
 namespace Controller;
 
-
-use Form\LoginType;
+use Form\ChangePasswordType;
+use Repository\ElementsRepository;
 use Silex\Application;
 use Silex\Api\ControllerProviderInterface;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
@@ -17,166 +17,161 @@ use Symfony\Component\Security\Core\User\User;
  * Class UserController
  * @package Controller
  */
-class UserController implements ControllerProviderInterface {
+class UserController implements ControllerProviderInterface
+{
 
-	public function connect( Application $app ) {
-		$controller = $app['controllers_factory'];
+    public function connect(Application $app)
+    {
+        $controller = $app['controllers_factory'];
 
-		$controller->match('/edit', [$this, 'editAction'])
-		           ->method('GET|POST')
-		           ->bind('user_edit_self');
+        $controller->match('/edit', [$this, 'editAction'])
+                   ->method('GET|POST')
+                   ->bind('user_edit_self');
 
-		$controller->match('/delete', [$this, 'deleteAction'])
-		           ->method('GET|POST')
-		           ->bind('user_delete_self');
+        $controller->match('/delete', [$this, 'deleteAction'])
+                   ->method('GET|POST')
+                   ->bind('user_delete_self');
 
-		return $controller;
-	}
+        return $controller;
+    }
 
-	/**
-	 * @param Application $app
-	 * @param Request $request
-	 *
-	 * @return \Symfony\Component\HttpFoundation\RedirectResponse
-	 */
-	public function editAction(Application $app, Request $request) {
+    /**
+     * @param Application $app
+     * @param Request     $request
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function editAction(Application $app, Request $request)
+    {
 
-		$userRepository = new UserRepository($app['db']);
-		$username = $this->getUsername($app);
-		$userId = $this->getUserId($app, $username);
+        $userRepository = new UserRepository($app['db']);
+        $username = $this->getUsername($app);
+        $userId = $this->getUserId($app, $username);
 
-		$newUser = [];
+        $newUser = [];
 
-		$form = $app['form.factory']->createBuilder(LoginType::class)->getForm();
-		$form->handleRequest($request);
+        $form = $app['form.factory']->createBuilder(ChangePasswordType::class)->getForm();
+        $form->handleRequest($request);
 
-		if($form->isSubmitted() && $form->isValid()){
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
 
+            if($data['password'] !== $data['checkPassword']) {
+	            $app['session']->getFlashBag()->add(
+		            'messages',
+		            [
+			            'type' => 'danger',
+			            'message' => 'message.passwords_not_match',
+		            ]
+	            );
+	            return $app->redirect($app['url_generator']->generate('user_edit_self'), 301);
+            }
 
-			$data = $form->getData();
+            $newUser['password'] = $app['security.encoder.bcrypt']->encodePassword($data['password'], '');
 
+            $userRepository->updateUserData($userId, $newUser);
 
-			$ifExists = $userRepository->getUserByLogin($data['login']);
+            $app['session']->getFlashBag()->add(
+                'messages',
+                [
+                    'type' => 'success',
+                    'message' => 'message.user_updated',
+                ]
+            );
+        }
 
-			if($ifExists != null) {
-				$app['session']->getFlashBag()->add(
-					'messages',
-					[
-						'type' => 'danger',
-						'message' => 'message.username_exists',
-					]
-				);
-				return $app->redirect($app['url_generator']->generate('user_edit_self'), 301);
-			}
+        return $app['twig']->render(
+            'user/manager.html.twig',
+            [
+                'editedUserName' => $username,
+                'form' => $form->createView(),
+            ]
+        );
+    }
 
+    /**
+     * @param Application $app
+     * @param Request     $request
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function deleteAction(Application $app, Request $request)
+    {
 
-			$newUser['login'] = $data['login'];
-			$newUser['password'] = $app['security.encoder.bcrypt']->encodePassword($data['password'], '');
-			$newUser['role_id'] = "2";
+        $userRepository = new UserRepository($app['db']);
+        $elementsRepository  = new ElementsRepository($app['db']);
 
-			$userRepository->updateUserData($userId, $newUser);
+        $username = $this->getUsername($app);
+        $userId = $this->getUserId($app, $username);
 
-			$app['session']->getFlashBag()->add(
-				'messages',
-				[
-					'type' => 'success',
-					'message' => 'message.user_updated',
-				]
-			);
+        $user = $userRepository->findUserById($userId);
 
-		}
+        $form = $app['form.factory']->createBuilder(FormType::class, $user)->add('id', HiddenType::class)->getForm();
+        $form->handleRequest($request);
 
-		return $app['twig']->render(
-			'user/manager.html.twig',
-			[
-				'editedUserName' => $username,
-				'form' => $form->createView(),
-			]
-		);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $connectedProducts = $elementsRepository->findAllUsersProducts($userId);
 
-
-
-	}
-
-	/**
-	 * @param Application $app
-	 * @param Request $request
-	 *
-	 * @return \Symfony\Component\HttpFoundation\RedirectResponse
-	 */
-	public function deleteAction(Application $app, Request $request) {
-
-		$userRepository = new UserRepository($app['db']);
-
-		$username = $this->getUsername($app);
-		$userId = $this->getUserId($app, $username);
-
-		$user = $userRepository->findUserById($userId);
-
-		$form = $app['form.factory']->createBuilder(FormType::class, $user)->add('id', HiddenType::class)->getForm();
-		$form->handleRequest($request);
-
-		if($form->isSubmitted() && $form->isValid()) {
-
-			$userRepository->deleteUser($userId);
+            foreach ($connectedProducts as $connectedProduct) {
+                $elementsRepository->delete($connectedProduct);
+            }
+            $userRepository->deleteUser($userId);
 
 
 
-			$app['session']->getFlashBag()->add(
-				'messages',
-				[
-					'type' => 'success',
-					'message' => 'message.user_successfully_deleted',
-				]
-			);
+            $app['session']->getFlashBag()->add(
+                'messages',
+                [
+                    'type' => 'success',
+                    'message' => 'message.user_successfully_deleted',
+                ]
+            );
 
-			return $app->redirect(
-				$app['url_generator']->generate('auth_logout'),
-				301
-			);
+            return $app->redirect(
+                $app['url_generator']->generate('auth_logout'),
+                301
+            );
+        }
 
-		}
-
-		return $app['twig']->render(
-			'user/delete.html.twig',
-			[
-				'form' => $form->createView(),
-			]
-		);
-
-	}
+        return $app['twig']->render(
+            'user/delete.html.twig',
+            [
+                'form' => $form->createView(),
+            ]
+        );
+    }
 
 
-	/**
-	 * @param Application $app
-	 *
-	 * @return mixed
-	 */
-	private function getUsername(Application $app) {
+    /**
+     * @param Application $app
+     *
+     * @return mixed
+     */
+    private function getUsername(Application $app)
+    {
 
-		$token = $app['security.token_storage']->getToken();
+        $token = $app['security.token_storage']->getToken();
 
-		if(null !== $token) {
-			$user = $token->getUsername();
-		}
+        if (null !== $token) {
+            $user = $token->getUsername();
+        }
 
-		return $user;
-	}
+        return $user;
+    }
 
-	/**
-	 * @param Application $app
-	 * @param $username
-	 *
-	 * @return mixed
-	 */
-	private function getUserId(Application $app, $username) {
+    /**
+     * @param Application $app
+     * @param $username
+     *
+     * @return mixed
+     */
+    private function getUserId(Application $app, $username)
+    {
 
-		$userRepository = new UserRepository($app['db']);
+        $userRepository = new UserRepository($app['db']);
 
-		$userId = $userRepository->getUserByLogin($username);
+        $userId = $userRepository->getUserByLogin($username);
 
-		return $userId['id'];
-
-	}
-
+        return $userId['id'];
+    }
 }
