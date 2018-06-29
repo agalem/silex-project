@@ -36,21 +36,21 @@ class AccountType extends AbstractType
                 ],
                 'constraints' => [
                     new Assert\NotBlank(
-                    	['groups' => ['user-default']]
+                        ['groups' => ['user-default']]
                     ),
                     new Assert\Length(
                         [
-                        	'groups' => ['user-default'],
+                            'groups' => ['user-default'],
                             'min' => 8,
                             'max' => 32,
                         ]
                     ),
-					new CustomAssert\UniqueUser(
-						[
-							'groups' => ['user-default'],
-							'repository' => isset($options['user_repository']) ? $options['user_repository'] : null,
-						]
-					),
+                    new CustomAssert\UniqueUser(
+                        [
+                            'groups' => ['user-default'],
+                            'repository' => isset($options['user_repository']) ? $options['user_repository'] : null,
+                        ]
+                    ),
                 ],
             ]
         );
@@ -76,24 +76,24 @@ class AccountType extends AbstractType
             ]
         );
         $builder->add(
-        	'checkPassword',
-	        PasswordType::class,
-	        [
-	        	'label' => 'label.rewrite_new_password',
-		        'required' => true,
-		        'attr' => [
-		        	'max_length' => 32,
-		        ],
-		        'constraints' => [
-			        new Assert\NotBlank(),
-			        new Assert\Length(
-				        [
-					        'min' => 8,
-					        'max' => 32,
-				        ]
-			        ),
-		        ],
-	        ]
+            'checkPassword',
+            PasswordType::class,
+            [
+                'label' => 'label.rewrite_new_password',
+                'required' => true,
+                'attr' => [
+                    'max_length' => 32,
+                ],
+                'constraints' => [
+                    new Assert\NotBlank(),
+                    new Assert\Length(
+                        [
+                            'min' => 8,
+                            'max' => 32,
+                        ]
+                    ),
+                ],
+            ]
         );
     }
 
@@ -105,12 +105,16 @@ class AccountType extends AbstractType
         return 'account_type';
     }
 
-    public function configureOptions(OptionsResolver $resolver) {
-    	$resolver->setDefaults(
-    		[
-    			'validation_groups' => 'user-default',
-			    'user_repository' => null,
-		    ]
-	    );
+    /**
+     * @param OptionsResolver $resolver
+     */
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefaults(
+            [
+                'validation_groups' => 'user-default',
+                'user_repository' => null,
+            ]
+        );
     }
 }

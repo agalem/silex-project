@@ -20,7 +20,6 @@ use Repository\UserRepository;
 
 /**
  * Class AdminController
- * @package Controller
  */
 class AdminController implements ControllerProviderInterface
 {
@@ -206,7 +205,7 @@ class AdminController implements ControllerProviderInterface
             $ifExists = $userRepository->getUserByLogin($newAdmin['login']);
             $ifExists = is_array($ifExists);
 
-            if ($ifExists == true) {
+            if (true === $ifExists) {
                 $app['session']->getFlashBag()->add(
                     'messages',
                     [

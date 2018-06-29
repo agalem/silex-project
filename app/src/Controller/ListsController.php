@@ -15,7 +15,6 @@ use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 
 /**
  * Class ListsController
- * @package Controller
  */
 class ListsController implements ControllerProviderInterface
 {
@@ -71,7 +70,7 @@ class ListsController implements ControllerProviderInterface
         $userId = $this->getUserId($app);
         $userRole = $this->getUserRole($app, $userId);
 
-        if ($userRole[0] == 'ROLE_ADMIN') {
+        if ($userRole[0] === 'ROLE_ADMIN') {
             return $app->redirect($app['url_generator']->generate('admin_manager'));
         }
 
@@ -93,7 +92,7 @@ class ListsController implements ControllerProviderInterface
         $userId = $this->getUserId($app);
         $userRole = $this->getUserRole($app, $userId);
 
-        if ($userRole[0] == 'ROLE_ADMIN') {
+        if ($userRole[0] === 'ROLE_ADMIN') {
             return $app->redirect($app['url_generator']->generate('admin_manager'));
         }
 
@@ -116,7 +115,7 @@ class ListsController implements ControllerProviderInterface
         $activeList = $listsRepository->findOneById($id, $userId);
         $plannedSpendings = $activeList['maxCost'];
 
-        if ($plannedSpendings == null) {
+        if (null === $plannedSpendings) {
             $spendPercent = 0;
         } else {
             $spendPercent = round($currentSpendigs / $plannedSpendings * 100);
@@ -155,7 +154,7 @@ class ListsController implements ControllerProviderInterface
         $userId = $this->getUserId($app);
         $userRole = $this->getUserRole($app, $userId);
 
-        if ($userRole[0] == 'ROLE_ADMIN') {
+        if ($userRole[0] === 'ROLE_ADMIN') {
             return $app->redirect($app['url_generator']->generate('admin_manager'));
         }
 
@@ -180,7 +179,7 @@ class ListsController implements ControllerProviderInterface
         $userId = $this->getUserId($app);
         $userRole = $this->getUserRole($app, $userId);
 
-        if ($userRole[0] == 'ROLE_ADMIN') {
+        if ($userRole[0] === 'ROLE_ADMIN') {
             return $app->redirect($app['url_generator']->generate('admin_manager'));
         }
 
@@ -194,7 +193,7 @@ class ListsController implements ControllerProviderInterface
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
             $ifListExists = $listsRepository->findOneByName($data['name'], $userId);
-            if ($ifListExists != null) {
+            if (null !== $ifListExists) {
                 $app['session']->getFlashBag()->add(
                     'messages',
                     [
@@ -241,7 +240,7 @@ class ListsController implements ControllerProviderInterface
         $userId = $this->getUserId($app);
         $userRole = $this->getUserRole($app, $userId);
 
-        if ($userRole[0] == 'ROLE_ADMIN') {
+        if ($userRole[0] === 'ROLE_ADMIN') {
             return $app->redirect($app['url_generator']->generate('admin_manager'));
         }
 
@@ -263,7 +262,7 @@ class ListsController implements ControllerProviderInterface
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
             $ifListExists = $listsRepository->findOneByName($data['name'], $userId);
-            if ($ifListExists != null and $data['maxCost'] == $ifListExists['maxCost']) {
+            if (null !== $ifListExists and $data['maxCost'] == $ifListExists['maxCost']) {
                 $app['session']->getFlashBag()->add(
                     'messages',
                     [
@@ -311,7 +310,7 @@ class ListsController implements ControllerProviderInterface
         $userId = $this->getUserId($app);
         $userRole = $this->getUserRole($app, $userId);
 
-        if ($userRole[0] == 'ROLE_ADMIN') {
+        if ($userRole[0] === 'ROLE_ADMIN') {
             return $app->redirect($app['url_generator']->generate('admin_manager'));
         }
 
@@ -372,7 +371,7 @@ class ListsController implements ControllerProviderInterface
         $userId = $this->getUserId($app);
         $userRole = $this->getUserRole($app, $userId);
 
-        if ($userRole[0] == 'ROLE_ADMIN') {
+        if ($userRole[0] === 'ROLE_ADMIN') {
             return $app->redirect($app['url_generator']->generate('admin_manager'));
         }
 

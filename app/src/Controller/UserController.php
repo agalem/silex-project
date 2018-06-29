@@ -15,11 +15,15 @@ use Symfony\Component\Security\Core\User\User;
 
 /**
  * Class UserController
- * @package Controller
  */
 class UserController implements ControllerProviderInterface
 {
 
+    /**
+     * @param Application $app
+     *
+     * @return mixed
+     */
     public function connect(Application $app)
     {
         $controller = $app['controllers_factory'];
@@ -56,15 +60,16 @@ class UserController implements ControllerProviderInterface
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
 
-            if($data['password'] !== $data['checkPassword']) {
-	            $app['session']->getFlashBag()->add(
-		            'messages',
-		            [
-			            'type' => 'danger',
-			            'message' => 'message.passwords_not_match',
-		            ]
-	            );
-	            return $app->redirect($app['url_generator']->generate('user_edit_self'), 301);
+            if ($data['password'] !== $data['checkPassword']) {
+                $app['session']->getFlashBag()->add(
+                    'messages',
+                    [
+                        'type' => 'danger',
+                        'message' => 'message.passwords_not_match',
+                    ]
+                );
+
+                return $app->redirect($app['url_generator']->generate('user_edit_self'), 301);
             }
 
             $newUser['password'] = $app['security.encoder.bcrypt']->encodePassword($data['password'], '');

@@ -87,7 +87,7 @@ class AuthController implements ControllerProviderInterface
 
         $user = [];
 
-        $form=$app['form.factory']->createBuilder(AccountType::class, $user, ['user_repository' => new UserRepository($app['db'])])->getForm();
+        $form = $app['form.factory']->createBuilder(AccountType::class, $user, ['user_repository' => new UserRepository($app['db'])])->getForm();
         $form->handleRequest($request);
 
 
@@ -97,7 +97,7 @@ class AuthController implements ControllerProviderInterface
             $user = $form->getData();
             $ifExists = $usersRepository->getUserByLogin($user['login']);
 
-            if ($ifExists != null) {
+            if (null !== $ifExists) {
                 $app['session']->getFlashBag()->add(
                     'messages',
                     [
@@ -109,17 +109,16 @@ class AuthController implements ControllerProviderInterface
                 return $app->redirect($app['url_generator']->generate('auth_create'), 301);
             }
 
-            if($user['password'] != $user['checkPassword']) {
+            if ($user['password'] !== $user['checkPassword']) {
+                $app['session']->getFlashBag()->add(
+                    'messages',
+                    [
+                        'type' => 'danger',
+                        'message' => 'message.passwords_not_match',
+                    ]
+                );
 
-	            $app['session']->getFlashBag()->add(
-		            'messages',
-		            [
-			            'type' => 'danger',
-			            'message' => 'message.passwords_not_match',
-		            ]
-	            );
-
-	            return $app->redirect($app['url_generator']->generate('auth_create'), 301);
+                return $app->redirect($app['url_generator']->generate('auth_create'), 301);
             }
 
             $user['password'] = $app['security.encoder.bcrypt']->encodePassword($user['password'], '');
@@ -145,6 +144,4 @@ class AuthController implements ControllerProviderInterface
             ]
         );
     }
-
-
 }

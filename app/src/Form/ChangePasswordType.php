@@ -12,7 +12,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 /**
  * Class ChangePasswordType
- * @package Form
+ *
  */
 class ChangePasswordType extends AbstractType
 {
@@ -35,18 +35,18 @@ class ChangePasswordType extends AbstractType
                 ],
             ]
         );
-	    $builder->add(
-		    'checkPassword',
-		    PasswordType::class,
-		    [
-			    'label' => 'label.rewrite_new_password',
-			    'required' => true,
-			    'attr' => [
-				    'max_length' => 45,
-				    'min_length' => 8,
-			    ],
-		    ]
-	    );
+        $builder->add(
+            'checkPassword',
+            PasswordType::class,
+            [
+                'label' => 'label.rewrite_new_password',
+                'required' => true,
+                'attr' => [
+                    'max_length' => 45,
+                    'min_length' => 8,
+                ],
+            ]
+        );
     }
 
     /**

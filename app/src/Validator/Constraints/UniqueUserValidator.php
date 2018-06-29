@@ -7,28 +7,27 @@ use Symfony\Component\Validator\ConstraintValidator;
 
 /**
  * Class UniqueUserValidator
- * @package Validator\Constraints
  */
 class UniqueUserValidator extends ConstraintValidator
 {
-	/**
-	 * @param mixed $value
-	 * @param Constraint $constraint
-	 */
-	public function validate($value, Constraint $constraint)
-	{
-		if (!$constraint->repository) {
-			return;
-		}
+    /**
+     * @param mixed      $value
+     * @param Constraint $constraint
+     */
+    public function validate($value, Constraint $constraint)
+    {
+        if (!$constraint->repository) {
+            return;
+        }
 
-		$result = $constraint->repository->findForUniqueness(
-			$value
-		);
+        $result = $constraint->repository->findForUniqueness(
+            $value
+        );
 
-		if ($result && count($result)) {
-			$this->context->buildViolation($constraint->message)
-			              ->setParameter('{{ user }}', $value)
-			              ->addViolation();
-		}
-	}
+        if ($result && count($result)) {
+            $this->context->buildViolation($constraint->message)
+                          ->setParameter('{{ user }}', $value)
+                          ->addViolation();
+        }
+    }
 }

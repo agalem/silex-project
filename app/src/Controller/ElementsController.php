@@ -21,11 +21,15 @@ use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 
 /**
  * Class ElementsController
- * @package Controller
  */
 class ElementsController implements ControllerProviderInterface
 {
 
+    /**
+     * @param Application $app
+     *
+     * @return mixed
+     */
     public function connect(Application $app)
     {
         $controller = $app['controllers_factory'];
@@ -61,7 +65,7 @@ class ElementsController implements ControllerProviderInterface
         $userId = $this->getUserId($app);
         $userRole = $this->getUserRole($app, $userId);
 
-        if ($userRole[0] == 'ROLE_ADMIN') {
+        if ($userRole[0] === 'ROLE_ADMIN') {
             return $app->redirect($app['url_generator']->generate('admin_manager'));
         }
 
@@ -87,8 +91,7 @@ class ElementsController implements ControllerProviderInterface
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
-        	$data = $form->getData();
+            $data = $form->getData();
 
             $elementsRepository->save($listId, $data, $userId);
 
@@ -126,7 +129,7 @@ class ElementsController implements ControllerProviderInterface
         $userId = $this->getUserId($app);
         $userRole = $this->getUserRole($app, $userId);
 
-        if ($userRole[0] == 'ROLE_ADMIN') {
+        if ($userRole[0] === 'ROLE_ADMIN') {
             return $app->redirect($app['url_generator']->generate('admin_manager'));
         }
 
@@ -190,7 +193,7 @@ class ElementsController implements ControllerProviderInterface
         $userId = $this->getUserId($app);
         $userRole = $this->getUserRole($app, $userId);
 
-        if ($userRole[0] == 'ROLE_ADMIN') {
+        if ($userRole[0] === 'ROLE_ADMIN') {
             return $app->redirect($app['url_generator']->generate('admin_manager'));
         }
 

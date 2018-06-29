@@ -16,7 +16,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class ListType
- * @package Form
+ *
  */
 class ListType extends AbstractType
 {
@@ -36,19 +36,19 @@ class ListType extends AbstractType
                 'attr' => [
                     'max_length' => 128,
                 ],
-	            'constraints' => [
-	            	new Assert\NotBlank(
-	            		['groups' => ['list-default']]
-		            ),
-		            new Assert\Length(
-		            	[
-		            		'groups' => ['list-default'],
-				            'min' => 3,
-				            'max' => 125,
-			            ]
-		            ),
+                'constraints' => [
+                    new Assert\NotBlank(
+                        ['groups' => ['list-default']]
+                    ),
+                    new Assert\Length(
+                        [
+                            'groups' => ['list-default'],
+                            'min' => 3,
+                            'max' => 125,
+                        ]
+                    ),
 
-	            ]
+                ],
 
             ]
         );
@@ -73,11 +73,15 @@ class ListType extends AbstractType
     }
 
 
-    public function configureOptions(OptionsResolver $resolver) {
-    	$resolver->setDefaults(
-    		[
-    			'validation_groups' => 'list-default',
-		    ]
-	    );
+    /**
+     * @param OptionsResolver $resolver
+     */
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefaults(
+            [
+                'validation_groups' => 'list-default',
+            ]
+        );
     }
 }

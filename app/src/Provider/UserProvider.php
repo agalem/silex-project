@@ -11,7 +11,6 @@ use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 
 /**
  * Class UserProvider
- * @package Provider
  */
 class UserProvider implements UserProviderInterface
 {

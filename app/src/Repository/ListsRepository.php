@@ -32,7 +32,7 @@ class ListsRepository
     /**
      * @param $userId
      *
-     * @return array
+     * @return mixed
      */
     public function findAll($userId)
     {
@@ -184,21 +184,22 @@ class ListsRepository
         return $result;
     }
 
-	/**
-	 * @param $name
-	 * @param $userId
-	 *
-	 * @return mixed
-	 */
-    public function findForUniqueness($name, $userId) {
+    /**
+     * @param $name
+     * @param $userId
+     *
+     * @return mixed
+     */
+    public function findForUniqueness($name, $userId)
+    {
 
 
-    	$queryBuilder = $this->queryAll();
-    	$queryBuilder->where('l.name = :name and l.createdBy = :userId')
-		            ->setParameter(':name', $name, \PDO::PARAM_STR)
-		            ->setParameter(':userId', $userId, \PDO::PARAM_INT);
+        $queryBuilder = $this->queryAll();
+        $queryBuilder->where('l.name = :name and l.createdBy = :userId')
+                    ->setParameter(':name', $name, \PDO::PARAM_STR)
+                    ->setParameter(':userId', $userId, \PDO::PARAM_INT);
 
-    	return $queryBuilder->execute()->fetchAll();
+        return $queryBuilder->execute()->fetchAll();
     }
 
     /**

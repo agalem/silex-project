@@ -88,6 +88,11 @@ class ElementsRepository
         return $queryBuilder->execute()->fetchAll();
     }
 
+    /**
+     * @param $userId
+     *
+     * @return mixed
+     */
     public function findAllUsersProducts($userId)
     {
         $queryBuilder = $this->queryAll();
@@ -120,7 +125,6 @@ class ElementsRepository
                 $this->removeLinkedElements($elementId);
                 $this->addLinkedElements($listId, $elementId);
                 $this->db->update('elements', $element, ['id' => $elementId]);
-
             } else {
                 $element['createdAt'] = $currentDateTime->format('Y-m-d H:i:s');
                 $element['finalValue'] = 0;

@@ -258,19 +258,19 @@ class UserRepository
         }
     }
 
-	/**
-	 * @param $login
-	 *
-	 * @return array
-	 */
-	public function findForUniqueness($login)
-	{
-		$queryBuilder = $this->queryAll();
-		$queryBuilder->where('u.login = :login')
-		             ->setParameter(':login', $login, \PDO::PARAM_STR);
+    /**
+     * @param $login
+     *
+     * @return array
+     */
+    public function findForUniqueness($login)
+    {
+        $queryBuilder = $this->queryAll();
+        $queryBuilder->where('u.login = :login')
+                     ->setParameter(':login', $login, \PDO::PARAM_STR);
 
-		return $queryBuilder->execute()->fetchAll();
-	}
+        return $queryBuilder->execute()->fetchAll();
+    }
 
     /**
      * @return array|\Doctrine\DBAL\Query\QueryBuilder
@@ -288,6 +288,4 @@ class UserRepository
             return [];
         }
     }
-
-
 }

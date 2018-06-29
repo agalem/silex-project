@@ -13,7 +13,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 /**
  * Class ElementType
- * @package Form
+ *
  */
 class ElementType extends AbstractType
 {
