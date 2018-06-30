@@ -272,6 +272,15 @@
                 <source>action.create</source>
                 <target>Utwórz konto</target>
             </trans-unit>
+
+            <trans-unit id="label.edit_account">
+                <source>label.edit_account</source>
+                <target>Edytuj konto</target>
+            </trans-unit>
+            <trans-unit id="label.rewrite_new_password">
+                <source>label.rewrite_new_password</source>
+                <target>Powtórz hasło</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

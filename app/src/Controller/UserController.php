@@ -45,7 +45,7 @@ class UserController implements ControllerProviderInterface
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function editAction(Application $app, Request $request)
+    public function editAction(Application $app)
     {
 
         $userRepository = new UserRepository($app['db']);
@@ -54,8 +54,8 @@ class UserController implements ControllerProviderInterface
 
         $newUser = [];
 
+
         $form = $app['form.factory']->createBuilder(ChangePasswordType::class)->getForm();
-        $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();

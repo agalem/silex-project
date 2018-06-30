@@ -34,23 +34,6 @@ $app->extend('translator', function ($translator, $app) {
     return $translator;
 });
 
-//$app->register(
-//    new DoctrineServiceProvider(),
-//    [
-//        'db.options' => [
-//            'driver' => 'pdo_mysql',
-//            'host' => 'localhost',
-//            'dbname' => '15_lempaszek',
-//            'user' => '15_lempaszek',
-//            'password' => 'U3g3t6m9j3',
-//            'charset' => 'utf8',
-//            'driverOptions' => [
-//                1002 => 'SET NAMES utf8',
-//            ],
-//        ],
-//    ]
-//);
-
 $app->register(
     new DoctrineServiceProvider(),
     [
@@ -58,8 +41,8 @@ $app->register(
             'driver' => 'pdo_mysql',
             'host' => 'localhost',
             'dbname' => '15_lempaszek',
-            'user' => 'si_admin',
-            'password' => 'password',
+            'user' => '15_lempaszek',
+            'password' => 'U3g3t6m9j3',
             'charset' => 'utf8',
             'driverOptions' => [
                 1002 => 'SET NAMES utf8',
@@ -67,6 +50,7 @@ $app->register(
         ],
     ]
 );
+
 
 $app->register(new FormServiceProvider());
 $app->register(new ValidatorServiceProvider());

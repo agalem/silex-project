@@ -18,6 +18,13 @@
                 {{ form_errors(form.password) }}
             </div>
         </div>
+        <div>
+            {{ form_label(form.checkPassword, 'label.rewrite_new_password'|trans) }}<br/>
+            <div class="form-input">
+                {{ form_widget(form.checkPassword) }}
+                {{ form_errors(form.checkPassword) }}
+            </div>
+        </div>
         <input type="submit" value="{{ 'action.change'|trans }}" class="btn btn-success custom-m-t" />
         {{ form_end(form) }}
     </div>

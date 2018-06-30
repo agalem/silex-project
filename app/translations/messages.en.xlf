@@ -273,6 +273,15 @@
                 <source>action.create</source>
                 <target>Create</target>
             </trans-unit>
+
+            <trans-unit id="label.edit_account">
+                <source>label.edit_account</source>
+                <target>Edit account</target>
+            </trans-unit>
+            <trans-unit id="label.rewrite_new_password">
+                <source>label.rewrite_new_password</source>
+                <target>Rewrite password</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
